@@ -11,7 +11,4 @@ assignees: ''
 
 ## Unique Features
 
-## Mystic Arte
-- [ ] Base 4 ★ Costume
-- [ ] Episode 1 - 5 ★ Costume
-- [ ] Episode 2 - 5 ★ Costume
+## Improvements?
