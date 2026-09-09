@@ -1,8 +1,8 @@
 ---
 name: Episode Issue Template
 about: Template for Episode issues
-title: "[EPISODE] "
-labels: Episode General, Gameplay
+title: Character - Episode X
+labels: Gameplay
 assignees: ''
 
 ---
