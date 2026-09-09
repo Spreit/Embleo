@@ -1,8 +1,8 @@
 ---
-name: Character Gameplay
+name: Character gameplay
 about: Things that need to be implemented/fixed for characters.
 title: ''
-labels: Character
+labels: Character, Gameplay
 assignees: ''
 
 ---
