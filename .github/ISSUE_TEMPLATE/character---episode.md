@@ -18,6 +18,8 @@ assignees: ''
 - [ ] Episode 1 - 5 ★ Costume
 - [ ] Episode 2 - 5 ★ Costume
 
+### Improvements?
+
 # Episodes
 
 ## Episode 1
