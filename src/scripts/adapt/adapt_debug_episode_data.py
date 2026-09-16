@@ -84,7 +84,8 @@ def fill_episode_layout_group_by_episode_id(episode_id):
         "DefenseTargets": []
     }
 
-    episode_master_data_path = "./data/masterdata/episode/{0}/".format(episode_id)
+    # episode_master_data_path = "./data/masterdata/episode/{0}/".format(episode_id)
+    episode_master_data_path = "./data/extract/masterdatadebug/episode/{0}/".format(episode_id)  # Use unadapted data for now
 
     # Get a list of files in the relevant episode data folder
     episode_master_data_path_files = os.listdir(episode_master_data_path)

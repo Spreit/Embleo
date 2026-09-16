@@ -44,6 +44,7 @@ SKIP_ROUTE_FORK_MERGE = False
 
 FAKE_CHECKPOINT_PATH = "./checkpoint.txt"
 
+
 '''
 logging.basicConfig(
 	filename='app.log',      # The name of the log file
@@ -276,7 +277,7 @@ def gacha_draw():
         # "MissionMaster": []
     }
 
-    gacha_master = load_json("./data/masterdata/GachaMasterData generated.json")
+    # gacha_master = load_json("./data/masterdata/GachaMasterData generated.json")
 
     # Update banner retrieval time in gacha master
     for entry in gacha_master:
@@ -384,11 +385,13 @@ def episode_list():
 
 episode_master_data_path_format = "./data/masterdata/episode/{0}/"
 
+# Use unadapted debug data for now
+episode_master_data_path_format = "./data/extract/masterdatadebug/episode/{0}/"
 
 def get_episode_gimmick_id_list(episode_id):
     episode_gimmick_id_list = []
 
-    gimmick_file_path = "./data/masterdata/episode/{0}/EpisodeGimmickMasterDataObject.json".format(episode_id)
+    gimmick_file_path = episode_master_data_path_format.format(episode_id) + "EpisodeGimmickMasterDataObject.json"
     if os.path.isfile(gimmick_file_path):
         gimmick_data = load_json(gimmick_file_path)
 
@@ -622,7 +625,7 @@ def fill_scenario_list_from_adapted_scenario(episode_id):
 def fill_event_drops_by_episode_id(episode_id):
     event_drops = []
 
-    event_drops_path = "./data/masterdata/episode/{0}/EpisodeEventDropMasterDataObject.json".format(episode_id)
+    event_drops_path = episode_master_data_path_format.format(episode_id) + "EpisodeEventDropMasterDataObject.json"
 
     if does_file_exist(event_drops_path):
         debug_drops = load_json(event_drops_path)
@@ -670,7 +673,7 @@ def fill_enemy_detail_by_episode_id(episode_id):
         "Enemies": []
     }
 
-    episode_enemy_data = load_json("./data/masterdata/episode/{0}/EpisodeEnemyMasterDataObject.json".format(episode_id))
+    episode_enemy_data = load_json(episode_master_data_path_format.format(episode_id) + "EpisodeEnemyMasterDataObject.json")
 
     for enemy in episode_enemy_data["Datas"]:
         master_enemy_id = enemy["_individualID"]
@@ -1456,7 +1459,7 @@ def top():
         top_data["nobleShop"] = load_json("./data/shop/NobleShop.json")
 
     # Gacha
-    if DISABLE_GACHA:
+    if not DISABLE_GACHA:
         t = time.time()
         gacha_data = load_json("./data/masterdata/GachaMasterData generated.json")
 

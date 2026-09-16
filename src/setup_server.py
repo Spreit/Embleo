@@ -191,6 +191,7 @@ def generate_master_data():
 
 def get_asset_server_link():
     is_saved_url_found = False
+    is_url_valid = False
 
     # Check if there is Asset Server URL file
     if os.path.exists(asset_server_link_file):
@@ -201,25 +202,31 @@ def get_asset_server_link():
             if asset_server_link == "":
                 print("Saved Asset Server URL is empty")
             else:
-                print("Found Asset Server URL in", asset_server_link_file,":", asset_server_link)
+                print("Found Asset Server URL in", asset_server_link_file, ":", asset_server_link)
                 is_saved_url_found = True
+                is_url_valid = True
 
-    # Ask for Asset Server URL and write it to file
-    if not is_saved_url_found:
-        print("Please input Asset Server URL and then press Enter:")
-        asset_server_link = input()
+    while not is_url_valid:
+        # Ask for Asset Server URL and write it to file
+        if not is_saved_url_found:
+            print("Please input Asset Server URL and then press Enter:")
+            asset_server_link = input()
 
-        with open(asset_server_link_file, "w") as f:
-            f.write(asset_server_link)
-
-        print("Saved Asset Server URL at", asset_server_link_file)
+            # Simple validity check
+            if ("http://" in asset_server_link) or ("https://" in asset_server_link):
+                with open(asset_server_link_file, "w") as f:
+                    f.write(asset_server_link)
+                is_url_valid = True
+                print("Saved Asset Server URL at", asset_server_link_file)
+            else:
+                print("Entered Asset Server URL seems to be invalid. Check if you entered \"http://\" or \"https://\" correctly.")
 
     return asset_server_link
 
 
-manifest = True
-download = True
-extract = True
+manifest = False
+download = False
+extract = False
 adapt_master_data = True
 adapt_scenario = True
 generate = True
@@ -289,5 +296,9 @@ if __name__ == "__main__":
     print("Asset Server URL:", asset_server_link)
 
     setup(asset_server_link)
+
+    print("")
+    print("Finished setting up the server")
+    input("Press Enter to exit")
 
 

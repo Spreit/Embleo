@@ -1,3 +1,4 @@
+import os
 import json
 
 from .master_data.buff import adapt_debug_buff_master_data
@@ -97,16 +98,17 @@ def adapt_debug_master_data(extract_folder, output_folder="./data/"):
 
         debug_file_path = extract_debug_master_data_folder_path + debug_name + ".json"
         adapted_file_path = master_data_output_folder + adapt_name + ".json"
-
+        
         debug_data: dict
         with open(debug_file_path, "r") as f:
             debug_data = json.load(f)
 
         adapted_data = adapt_function(debug_data)
-
+        
+        os.makedirs(os.path.dirname(adapted_file_path), exist_ok=True)
         with open(adapted_file_path, "w") as of:
             json.dump(adapted_data, of, ensure_ascii=False, indent=4)
 
     # Sequence Data is handles separately, because it produces two files
     print("Adapting Sequence Master Data")
-    # adapt_debug_sequences(extract_debug_master_data_folder_path + "SequenceMasterDataObject.json", master_data_output_folder)
+    adapt_debug_sequences_master_data(extract_debug_master_data_folder_path + "SequenceMasterDataObject.json", master_data_output_folder)
