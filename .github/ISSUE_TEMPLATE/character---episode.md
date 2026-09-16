@@ -1,6 +1,6 @@
 ---
 name: Character + Episode
-about: Things that need to be implemented/fixed for characters.
+about: Things that need to be implemented/fixed for characters and episodes.
 title: ''
 labels: Episode 1, Episode 2, Gameplay, Softlock
 assignees: ''
