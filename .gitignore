@@ -1,7 +1,33 @@
 # Not ready for publishing
 docs/*
 
-# src
-src/modules/*
-src/post/*
-src/response_skeletons/*
+# Not used
+src/modules/
+src/post/
+src/response_skeletons/
+
+# Files and folders that are suppose to be downloaded, extracted and adapted
+src/data/chronology/
+src/data/download/
+src/data/extract/
+src/data/food/
+src/data/masterdata/
+src/data/chronology.db
+
+src/scripts/uber-apk-signer-1.3.0.jar
+
+# Other files
+src/modules/
+src/post/
+src/response_skeletons/
+
+src/asset_server_link.txt
+src/checkpoint.txt
+src/server_config.txt
+src/cmd server.bat
+
+*.lnk
+
+# PyCharm things
+__pycache__
+*.pyc
