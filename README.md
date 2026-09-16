@@ -1,0 +1,1 @@
+Embleo is a WIP server emulator for a vertical mobile anime game.
