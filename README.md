@@ -1,7 +1,7 @@
 **Embleo** is a WIP server emulator for a vertical mobile anime game.
 
 # How to play
-
+Download this server (`Code > Download ZIP`) and extract the archive.
 ## Running the Game Server
 1. Install [Python](https://www.python.org/downloads/release/python-3147/)
 2. Double-click `install_python_dependencies.py`
