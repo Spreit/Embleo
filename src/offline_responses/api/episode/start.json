@@ -1,0 +1,75 @@
+{
+    "EpisodeToken": "fill_with_episode_id_or_something",
+    "CharacterDetail": {},
+    "EnemyDetail": {
+        "Enemies": []
+    },
+    "EpisodeDetail": {
+        "Scenarios": [],
+        "LayoutGroup": {
+            "Breakables": [],
+            "Enemies": [],
+            "EventObjects": [],
+            "Gimmicks": [],
+            "Npcs": [],
+            "Items": [],
+            "StaticItems": [],
+            "SecretMissions": [],
+            "CheckPoints": [],
+            "EventItems": [],
+            "DefenseTargets": []
+        },
+        "scenarioGroup": {
+			"CheckPoints": [],
+			"Kills": [],
+			"ArrivalPoints": [],
+			"Talks": [],
+			"Gimmicks": [],
+			"Demos": [],
+			"EditParties": [],
+			"Scripts": [],
+			"PartyParams": [],
+			"PartyFlags": [],
+			"RouteMerges": [],
+			"RouteForks": [],
+			"RouteChecks": [],
+			"Timers": [],
+			"EnemyParams": [],
+			"PlayerActions": [],
+			"BreakableActions": [],
+			"MiniGames": []
+		},
+        "eventDrops": []
+    },
+    "EpisodeDetailUser": {
+        "status": 0,
+		
+        "startScenarioNo": 0,
+        "revivalPointId": "",
+        "revivalScenarioNo": 0,
+		
+        "playUser": {
+            "money": 0,
+            "fieldCoin": 0,
+            "skill": 1000,
+            "magic": 1000,
+            "food": 0
+        },
+        "playCharacters": [{
+                "characterId": "pl002",
+                "hp": 240,
+                "sp": 45,
+                "level": 1,
+                "exp": 0
+            }
+        ],
+        "drops": [],
+        "secretMission": {
+			"Statuses": []
+		},
+        "acquireStaticItemIds": [],
+        "tutorialGuideIds": [],
+        "conqueredPoint": 0
+    },
+    "MasterGroup": {}
+}

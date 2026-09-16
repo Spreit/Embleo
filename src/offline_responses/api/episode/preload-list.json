@@ -1,0 +1,37 @@
+{
+    "Episodes": [{
+            "EpisodeId": "pl001_ep001",
+            "Flag": 0
+        },{
+            "EpisodeId": "pl001_ep002",
+            "Flag": 0
+        },{
+            "EpisodeId": "pl002_ep001",
+            "Flag": 0
+        },{
+            "EpisodeId": "pl002_ep002",
+            "Flag": 0
+        },{
+            "EpisodeId": "pl007_ep001",
+            "Flag": 0
+        },{
+            "EpisodeId": "pl007_ep002",
+            "Flag": 0
+        },{
+            "EpisodeId": "pl010_ep001",
+            "Flag": 0
+        },{
+            "EpisodeId": "pl011_ep001",
+            "Flag": 0
+        },{
+            "EpisodeId": "pl011_ep002",
+            "Flag": 0
+        },{
+            "EpisodeId": "pl014_ep001",
+            "Flag": 0
+        },{
+            "EpisodeId": "pl020_ep002",
+            "Flag": 0
+        }
+    ]
+}

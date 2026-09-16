@@ -16,6 +16,13 @@ src/data/chronology.db
 
 src/scripts/uber-apk-signer-1.3.0.jar
 
+# User data
+src/data/user/UserCharacter.json
+src/data/user/UserEpisode.json
+src/data/user/UserEquipment.json
+src/data/user/UserItems.json
+src/data/user/top
+
 # Other files
 src/modules/
 src/post/

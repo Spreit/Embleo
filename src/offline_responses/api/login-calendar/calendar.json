@@ -1,0 +1,73 @@
+{
+    "LoginCalendar": {
+        "LoginBonusPanels": [{
+                "Date": 1789253502,
+                "OpenStatus": 0,
+                "Rewards": [{
+                        "Type": 1,
+                        "Amount": 10,
+                        "Complements": ""
+                    }
+                ],
+                "IsToday": 0,
+                "TimeZone": 0
+            }, {
+                "Date": 1786661502,
+                "OpenStatus": 0,
+                "Rewards": [{
+                        "Type": 1,
+                        "Amount": 10,
+                        "Complements": ""
+                    }
+                ],
+                "IsToday": 0,
+                "TimeZone": 0
+            }, {
+                "Date": 1789426302,
+                "OpenStatus": 0,
+                "Rewards": [],
+                "IsToday": 1,
+                "TimeZone": 0
+            }, {
+                "Date": 1789512702,
+                "OpenStatus": 0,
+                "Rewards": [],
+                "IsToday": 0,
+                "TimeZone": 0
+            }, {
+                "Date": 1789599102,
+                "OpenStatus": 0,
+                "Rewards": [],
+                "IsToday": 0,
+                "TimeZone": 0
+            }
+        ],
+        "Events": [
+            {
+                "Type": 0,
+                "Id": "",
+                "SubId": "pl001,pl002,pl003",
+                "StartAt": 1786661502,
+                "EndAt": 1789599102,
+                "TimeZone": 0
+            },{
+                "Type": 1,
+                "Id": "",
+                "SubId": "",
+                "StartAt": 1786661502,
+                "EndAt": 1789512702,
+                "TimeZone": 0
+            }, {
+                "Type": 3,
+                "Id": "2",
+                "SubId": "",
+                "StartAt": 1786661502,
+                "EndAt": 1789599102,
+                "TimeZone": 0
+            }
+        ],
+        "RequiredGold": 100,
+        "OffsetSecond": 0,
+        "Timezone": 0
+    }
+}

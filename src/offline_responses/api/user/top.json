@@ -1,0 +1,239 @@
+{
+    "user": {},
+
+    "orderdIds": [
+        {
+            "MasterDataId": "mis01_0079",
+            "Type": 2
+        }
+    ],
+    "episodes": [],
+    "episodeUsers": [],
+
+    "character": [],
+    "equipment": [],
+    "item": [],
+    "parameter": {},
+    "hcBalance": {},
+    "pieUserSetting": {},
+
+    "characterMaster": [],
+    "equipmentMaster": [],
+    "itemMaster": [],
+
+    "levelStatusCurveChrMaster": [],
+    "levelStatusCurveEquMaster": [],
+
+    "levelExpCurveChrMaster": [],
+    "levelExpCurveEquMaster": [],
+    "levelExpCurveEquSpMaster": [],
+
+    "buff": [],
+
+    "events": [],
+    "pveEvents": [],
+    "eventSkits": [],
+    "panelMissions": [],
+
+    "mission": [
+        {
+            "MissionId": "mis01_0026",
+            "Status": 0,
+            "Step": 1,
+            "StepReward": [],
+            "PrevValue": 0,
+            "Value": 1,
+            "NextValue": 2
+        },
+        {
+            "MissionId": "mis01_0079",
+            "Status": 0,
+            "Step": 1,
+            "StepReward": [],
+            "PrevValue": 0,
+            "Value": 1,
+            "NextValue": 2
+        }
+    ],
+    "missionMaster": [
+        {
+            "MissionId": "mis01_0026",
+            "Category": 1,
+            "MaxStep": 3,
+
+            "ConditionType": 0,
+            "Condition": "",
+            "ConditionColumn": "",
+            "ConditionKey": "",
+
+            "OpenType": 0,
+            "OpenCondition": "",
+            "OpenKey": "",
+            "OpenValue": "",
+
+            "ResetType": 0,
+            "ResetValue": 0,
+			
+            "Step": [
+                {
+                    "ConditionValue": 10,
+                    "RankPoint": 0,
+                    "Reward": [
+                        {
+                            "Type": 6,
+                            "Amount": 5
+                        }
+                    ]
+                },
+                {
+                    "ConditionValue": 25,
+                    "RankPoint": 0,
+                    "Reward": [
+                        {
+                            "Type": 6,
+                            "Amount": 5
+                        }
+                    ]
+                },
+                {
+                    "ConditionValue": 50,
+                    "RankPoint": 0,
+                    "Reward": [
+                        {
+                            "Type": 6,
+                            "Amount": 5
+                        }
+                    ]
+                }
+            ],
+            "SubCategory": 0,
+            "CondSubCol": "",
+            "CondSubKey": "",
+            "CondOffset": 0,
+            "SortOrder": 0,
+            "FilterKey": "",
+            "FilterVal": 0,
+            "NearlyVal": 0,
+            "ClParam": "",
+            "CloseType": 0
+        },
+        {
+            "MissionId": "mis01_0079",
+            "Category": 1,
+            "MaxStep": 2,
+
+            "ConditionType": 0,
+            "Condition": "",
+            "ConditionColumn": "",
+            "ConditionKey": "",
+
+            "OpenType": 0,
+            "OpenCondition": "",
+            "OpenKey": "",
+            "OpenValue": "",
+
+            "ResetType": 0,
+            "ResetValue": 0,
+
+            "Step": [
+                {
+                    "ConditionValue": 10,
+                    "RankPoint": 0,
+                    "Reward": [
+                        {
+                            "Type": 6,
+                            "Amount": 5
+                        }
+                    ]
+                },
+                {
+                    "ConditionValue": 25,
+                    "RankPoint": 0,
+                    "Reward": [
+                        {
+                            "Type": 6,
+                            "Amount": 5
+                        }
+                    ]
+                },
+                {
+                    "ConditionValue": 50,
+                    "RankPoint": 0,
+                    "Reward": [
+                        {
+                            "Type": 6,
+                            "Amount": 5
+                        }
+                    ]
+                }
+            ],
+            "SubCategory": 4,
+            "CondSubCol": "",
+            "CondSubKey": "",
+            "CondOffset": 0,
+            "SortOrder": 0,
+            "FilterKey": "",
+            "FilterVal": 0,
+            "NearlyVal": 0,
+            "ClParam": "",
+            "CloseType": 0
+        }
+    ],
+
+    "gacha": [],
+    "gachaTicket": [],
+
+    "badge":
+    {
+        "IsNewMessage": false,
+        "IsNewGuildMessage": false,
+        "PresentCount": 0,
+        "IsUnreadNews": false,
+        "EnableRewardReceiveEventId": ""
+    },
+
+    "cookingBonusRatio": [0.0,0.1,0.2,0.3,0.4],
+    "ticketMaster": [],
+    "ticket": [],
+    "stampBadgeMaster": [
+        {
+            "Id": "emblem_sh001_001",
+            "Category": 1,
+            "Number": 0,
+            "Type": 0,
+            "SubCategory": 1
+        }
+    ],
+    "stampBadge": [
+        {
+            "Id": "emblem_sh001_001",
+            "Category": 0,
+            "Type": 0,
+            "SourceId": "uiexternal/ui/common/textures/icon/emblem/icon_emblem_sh001_001",
+
+            "SortOrder": 0,
+            "SubCategory": 1,
+            "IsUse": true
+        }
+    ],
+    "stampDeck": [
+        {
+            "Category": "default",
+            "Deck": ["emblem_sh001_001"]
+        }
+    ],
+
+    "nobleShop": [],
+
+    "maintenanceFlag": 0,
+    "countValues": [],
+    "foodShopScore": 0,
+    "foodShopStatus": 0,
+    "introductionResult":
+    {
+        "Finished": false,
+        "OpenedEpisodes":
+        [
+        ]
+    }
+}

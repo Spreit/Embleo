@@ -1,0 +1,171 @@
+{
+    "GachaId": "gasha_final_01_pl001_ten",
+    "Gacha": [{
+            "GachaBaseId": "gasha_final_01_pl001",
+            "StartAt": 1774696200,
+            "EndAt": 1806232200,
+            "Type": 3,
+            "CostType": 1,
+            "Groups": [{
+                    "Group": 0,
+                    "Category": 9,
+                    "Rarity": 4,
+                    "Flag": 0,
+                    "Ratio": 1.0,
+                    "ItemId": "pl001_04_001"
+                }
+            ],
+            "Prizes": [{
+                    "Group": 0,
+                    "Category": 9,
+                    "Rarity": 4,
+                    "Flag": 0,
+                    "Ratio": 1.0,
+                    "ItemId": "pl001_04_001"
+                }
+            ],
+            "Bodies": [{
+                    "GachaId": "gasha_final_01_pl001_single",
+                    "EjectionCount": 1,
+                    "GuaranteeCount": 1,
+                    "Stock": -1,
+                    "Cost": 30,
+                    "SubCost": 30,
+                    "ResetType": 0,
+                    "LeftStock": -1,
+                    "Flag": 0,
+                    "NextCost": 30,
+                    "NextStatus": 0,
+                    "NextResetAt": 1806232200,
+                    "ValidUntil": 1806232200
+                }, {
+                    "GachaId": "gasha_final_01_pl001_ten",
+                    "EjectionCount": 10,
+                    "GuaranteeCount": 10,
+                    "Stock": -1,
+                    "Cost": 300,
+                    "SubCost": 300,
+                    "ResetType": 0,
+                    "LeftStock": -1,
+                    "Flag": 0,
+                    "NextCost": 300,
+                    "NextStatus": 0,
+                    "NextResetAt": 1806232200,
+                    "ValidUntil": 1806232200
+                }
+            ],
+            "ContentsOrderDate": 1774696200,
+            "CharacterId": "pl001",
+            "BannerImage": "",
+            "BackgroundImage": "",
+            "NewsUrl": "https://example.com/",
+            "PromotionText": "",
+            "RewardText": "",
+            "DiscountText": "",
+            "Name": "Leo Banner",
+            "GroupingId": "",
+            "TabFlag": 8,
+            "AlterNameId": ""
+        }
+    ],
+    "HcBalance": {
+        "PaidBalance": 2500,
+        "FreeBalance": 2470,
+        "PaidBefore": 100,
+        "FreeBefore": 100
+    },
+    "OrderdIds": [
+    ],
+    "Equipment": [{
+            "EquipmentId": "pl001_04_001",
+            "Category": 1,
+            "Level": 2,
+            "Exp": 1,
+            "UpdatedAt": 0,
+            "SpLevel": 1,
+            "SpNext": 5,
+            "CreatedAt": 0
+        }
+    ],
+    "Character": [{
+            "CharacterId": "pl001",
+            "Level": 1,
+            "Exp": 1,
+            "LevelCap": 50,
+            "CapExp": 50000,
+            "VisualEquipment": ["pl001_04_001", "wp001_04_001", "", "", "", ""],
+            "Costume": ["pl001_04_001"],
+            "WeaponMain": ["wp001_05_001", "wp001_04_001"],
+            "WeaponSub": [],
+            "AccessoryMain": [],
+            "AccessorySub": [],
+            "CostumeSpell": ["pl001_04_001"],
+            "WeaponSpell": ["wp001_04_001"],
+            "Food": [],
+            "Flags": 0,
+            "LastPower": 34,
+            "CapExpPrev": 0,
+            "CapExpNext": 456
+        }, {
+            "CharacterId": "pl011",
+            "Level": 10,
+            "Exp": 234,
+            "LevelCap": 20,
+            "CapExp": 0,
+            "VisualEquipment": ["pl001_04_001", "wp001_04_001", "", "", "", ""],
+            "Costume": ["pl001_04_001"],
+            "WeaponMain": ["wp001_04_001"],
+            "WeaponSub": [],
+            "AccessoryMain": [],
+            "AccessorySub": [],
+            "CostumeSpell": ["pl001_04_001"],
+            "WeaponSpell": ["wp001_04_001"],
+            "Food": [],
+            "Flags": 1,
+            "LastPower": 34,
+            "CapExpPrev": 0,
+            "CapExpNext": 456
+        }, {
+            "CharacterId": "pl018",
+            "Level": 18,
+            "Exp": 234,
+            "LevelCap": 20,
+            "CapExp": 0,
+            "VisualEquipment": ["pl001_04_001", "wp001_04_001", "", "", "", ""],
+            "Costume": ["pl001_04_001"],
+            "WeaponMain": ["wp001_04_001"],
+            "WeaponSub": [],
+            "AccessoryMain": [],
+            "AccessorySub": [],
+            "CostumeSpell": ["pl001_04_001"],
+            "WeaponSpell": ["wp001_04_001"],
+            "Food": [],
+            "Flags": 1,
+            "LastPower": 34,
+            "CapExpPrev": 0,
+            "CapExpNext": 456
+        }
+    ],
+    "Result": [{
+            "ItemId": "pl001_04_001"
+        },{
+            "ItemId": "pl001_04_001"
+        },{
+            "ItemId": "pl001_04_001"
+        },{
+            "ItemId": "pl001_04_001"
+        },{
+            "ItemId": "pl001_04_001"
+        },{
+            "ItemId": "pl001_04_001"
+        },{
+            "ItemId": "pl001_04_001"
+        },{
+            "ItemId": "pl001_04_001"
+        },{
+            "ItemId": "pl001_04_001"
+        },{
+            "ItemId": "pl001_04_001"
+        }
+    ]
+}

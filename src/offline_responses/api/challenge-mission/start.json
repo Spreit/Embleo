@@ -1,0 +1,146 @@
+{
+    "missionToken": "wp001_05_001_cl01",
+    "characterDetail": {
+        "characters": [],
+        "userCharacters": [],
+        "userEquipments": [],
+        "userItems": [],
+        "baseVisual": {
+            "settings": [{
+                    "ScenarioNo": 20,
+                    "Ids": [
+                        "pl001_05_001"
+                    ]
+                }
+            ],
+            "characters": [{
+                    "VisualId": "pl001_05_001",
+                    "CharacterId": "pl001",
+                    "VisualEquipment": [
+                        "pl001_05_001",
+                        "wp001_05_001",
+                        "",
+                        "",
+                        "",
+                        ""
+                    ]
+                }
+            ]
+        }
+    },
+    "EpisodeDetail": {
+        "Scenarios": [],
+        "LayoutGroup": {
+            "Breakables": [],
+            "Enemies": [],
+            "EventObjects": [],
+            "Gimmicks": [],
+            "Npcs": [],
+            "Items": [],
+            "StaticItems": [],
+            "SecretMissions": [],
+            "CheckPoints": [],
+            "EventItems": [],
+            "DefenseTargets": []
+        },
+        "scenarioGroup": {
+			"CheckPoints": [],
+			"Kills": [],
+			"ArrivalPoints": [],
+			"Talks": [],
+			"Gimmicks": [],
+			"Demos": [],
+			"EditParties": [],
+			"Scripts": [],
+			"PartyParams": [],
+			"PartyFlags": [],
+			"RouteMerges": [],
+			"RouteForks": [],
+			"RouteChecks": [],
+			"Timers": [],
+			"EnemyParams": [],
+			"PlayerActions": [],
+			"BreakableActions": [],
+			"MiniGames": []
+		},
+        "eventDrops": []
+    },
+    "episodeDetailUser": {
+        "status": 0,
+        "startScenarioNo": 0,
+        "revivalPointId": "CP_00001",
+        "revivalScenarioNo": 80,
+        "playUser": {
+            "money": 0,
+            "fieldCoin": 0,
+            "skill": 0,
+            "magic": 0,
+            "food": 0
+        },
+        "playCharacters": [{
+                "characterId": "pl001",
+                "hp": 9999,
+                "sp": 100,
+                "level": 23,
+                "exp": 234
+            }
+        ],
+        "drops": [],
+        "secretMission": {},
+        "acquireStaticItemIds": [],
+        "tutorialGuideIds": [],
+        "conqueredPoint": 0
+    },
+    "missionDetail": {
+        "timeLimit": 180,
+        "timerCountType": 1,
+        "finishes": [
+			{
+                "type": 2,
+                "flag": 1,
+                "option": ""
+            }
+        ],
+        "rules": [
+			{
+				"type": 0,
+                "option": ""
+			}
+		],
+        "evals": [{
+                "type": 100,
+                "option": "",
+                "ranks": [
+                    180
+                ]
+            }
+        ],
+        "rewardCapExp": 100
+    },
+    "masterGroup": {
+        "characters": [],
+        "enemies": [],
+        "enemyIndividuals": [],
+        "partsStatusInfos": [],
+        "items": [],
+        "equipments": [],
+        "searchMoveArounds": [],
+
+        "characterSequences": [],
+        "enemySequences": [],
+
+        "characterLevelStatus": [],
+        "characterLevelExp": [],
+        "equipmentLevelStatus": [],
+
+        "characterBehaviourTrees": [],
+        "enemyBehabiourTrees": [],
+
+        "secretMissions": [],
+        "vehicles": [],
+        "tutorialGuides": [],
+
+        "equipmentSpLevelExp": [],
+        "buff": []
+    }
+}

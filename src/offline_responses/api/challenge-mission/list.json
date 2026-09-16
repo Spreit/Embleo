@@ -1,0 +1,23 @@
+{
+	"ChallengeMissions": [
+		{
+			"ChallengeMissionId": "wp001_05_001_cl01",
+			"EquipmentId": "wp001_05_001",
+			"Category": 2,
+			"CharacterId": "pl001",
+			"RecommendedLevel": 5,
+			"CostumeId": "pl001_05_001",
+			"WeaponId": "wp001_05_001",
+			"CostumeSpellId": "plsp001_05_001",
+			"WeaponSpellId": "mag01_0001_01",
+			"RewardCapExp": 100
+		}
+	],
+	"ChallengeMissionUsers": [
+		{
+			"ChallengeMissionId": "wp001_05_001_cl01",
+			"Flag": 0
+		}
+	],
+	"MstEquipments": []
+}

@@ -1,0 +1,31 @@
+{
+    "details": [],
+    "characterDetail": {
+        "characters": [],
+        "userCharacters": [],
+        "userEquipments": [],
+        "userItems": [],
+        "baseVisual": null
+    },
+    "masterGroup": {
+        "characters": [],
+        "enemies": [],
+        "enemyIndividuals": [],
+        "partsStatusInfos": [],
+        "items": [],
+        "equipments": [],
+        "searchMoveArounds": [],
+        "characterSequences": [],
+        "enemySequences": [],
+        "characterLevelStatus": [],
+        "characterLevelExp": [],
+        "equipmentLevelStatus": [],
+        "characterBehaviourTrees": [],
+        "enemyBehabiourTrees": [],
+        "secretMissions": [],
+        "vehicles": [],
+        "tutorialGuides": [],
+        "equipmentSpLevelExp": [],
+        "buff": []
+    }
+}

@@ -1,0 +1,6 @@
+{
+	"IsStopped": false,
+	"IsReachedLimitByAge": false,
+	"IsTooYoungToPurchase": false,
+	"IsLimited": true
+}

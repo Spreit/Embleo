@@ -1,0 +1,11 @@
+{
+        "recommendVersionUpdate": false,
+        "versionUpdateStatus": 0,  
+        "serverTime": "2026-01-01T00:00:00Z",
+        "assetUrl": "this_link_is_provided_by_server_script",
+        "assetbundleManifest": "fd2ab21941c4f074bb19997e67f62eb1",
+        "masterDataVersion": "1.6.0",
+        "gdprVer": "0",
+        "isValidAuthConsent": true,
+        "serverStatus": 0
+}

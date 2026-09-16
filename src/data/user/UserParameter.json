@@ -1,0 +1,17 @@
+{
+	"Gold": 10000,
+	"Coin": 10000,
+	"NobleCoin": 9,
+	"MissionRank": 1,
+	"MissionExp": 0,
+	"FollowCount": 0,
+	"FollowerCount": 0,
+	"BlockCount": 0,
+	"Flags": [],
+	"MissionNextExp": 3,
+	"Word": "Hello, hello, it's nice to meet you.",
+	"FavouriteChrId": "pl001",
+	"EmblemId": "emblem_sh001_001",
+	"NobleStartAtUnix": 0,
+	"NobleEndAtUnix": 0
+}

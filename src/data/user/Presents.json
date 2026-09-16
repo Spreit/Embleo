@@ -1,0 +1,14 @@
+{
+    "userPresents": [
+        {
+            "UserPresentId": "medium-pack 1779438289",
+            "Reward": {
+                "Type": 1,
+                "Amount": 900
+            },
+            "Comment": "From the Shop",
+            "Status": 0
+        }
+    ],
+    "UserPresents": []
+}

@@ -1,0 +1,22 @@
+{
+    "News": [
+        {
+            "NewsId": "test",
+            "Title": "Luminaria is Dead",
+            "Content": "Next time on Tales of Gacha:<br><b>End of Service</b>",
+            "StartAt": 1658250000,
+            "EndAt": 1784480400,
+            "IsNew": false,
+            "Status": 1
+        },
+		{
+            "NewsId": "playability",
+            "Title": "About Episode playability",
+            "Content": "Don't expect episodes to be fully playable yet.",
+            "StartAt": 1658250000,
+            "EndAt": 1784480400,
+            "IsNew": false,
+            "Status": 0
+        }
+    ]
+}

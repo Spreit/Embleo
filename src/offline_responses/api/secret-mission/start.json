@@ -1,0 +1,128 @@
+{
+    "MissionToken": "test_mission_token",
+    "CharacterDetail": {},
+    "EnemyDetail": {
+        "Enemies": []
+    },
+    "EpisodeDetail": {
+        "Scenarios": [],
+        "LayoutGroup": {
+            "Breakables": [],
+            "Enemies": [],
+            "EventObjects": [],
+            "Gimmicks": [],
+            "Npcs": [],
+            "Items": [],
+            "StaticItems": [],
+            "SecretMissions": [],
+            "CheckPoints": [],
+            "EventItems": [],
+            "DefenseTargets": []
+        },
+        "scenarioGroup": {
+			"CheckPoints": [],
+			"Kills": [],
+			"ArrivalPoints": [],
+			"Talks": [],
+			"Gimmicks": [],
+			"Demos": [],
+			"EditParties": [],
+			"Scripts": [],
+			"PartyParams": [],
+			"PartyFlags": [],
+			"RouteMerges": [],
+			"RouteForks": [],
+			"RouteChecks": [],
+			"Timers": [],
+			"EnemyParams": [],
+			"PlayerActions": [],
+			"BreakableActions": [],
+			"MiniGames": []
+		},
+        "eventDrops": []
+    },
+    "EpisodeDetailUser": {
+        "status": 0,
+        "startScenarioNo": 1,
+		
+        "playUser": {
+            "money": 0,
+            "fieldCoin": 0,
+            "skill": 0,
+            "magic": 0,
+            "food": 0
+        },
+        "playCharacters": [{
+                "characterId": "pl003",
+                "hp": 240,
+                "sp": 45,
+                "level": 1,
+                "exp": 0
+            }
+        ],
+        "drops": [],
+        "secretMission": {
+			"Statuses": [1]
+		},
+        "acquireStaticItemIds": [],
+        "tutorialGuideIds": [],
+        "conqueredPoint": 0
+    },
+    "MissionDetail": {
+        "TimeLimit": 90,
+        "TimerCountType": 0,
+        "Finishes": [{
+                "Type": 7,
+                "Flag": 1,
+                "Option": ""
+            }
+        ],
+        "Rules": [],
+        "Evals": [{
+                "Type": 500,
+                "Option": "",
+                "Ranks": [
+                    450,
+                    720,
+                    750
+                ]
+            }
+        ],
+        "Rewards": [{
+                "RewardType": 2,
+                "RewardValue": 2000
+            }, {
+                "RewardType": 2,
+                "RewardValue": 5000
+            }, {
+                "RewardType": 1,
+                "RewardValue": 30
+            }
+        ]
+    },
+    "MasterGroup": {
+        "characters": [],
+        "enemies": [],
+        "enemyIndividuals": [],
+        "partsStatusInfos": [],
+        "items": [],
+        "equipments": [],
+
+        "characterSequences": [],
+        "enemySequences": [],
+
+        "characterLevelStatus": [],
+        "characterLevelExp": [],
+        "equipmentLevelStatus": [],
+
+        "characterBehaviourTrees": [],
+        "enemyBehabiourTrees": [],
+
+        "secretMissions": [],
+        "vehicles": [],
+        "tutorialGuides": [],
+
+        "equipmentSpLevelExp": [],
+        "buff": []
+    }
+}

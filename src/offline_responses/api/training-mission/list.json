@@ -1,0 +1,29 @@
+{
+    "TrainingMissions": [{
+            "TrainingMissionId": "exp_mission_001",
+            "Category": 0,
+            "LocationId": "FOR01",
+            "Detail": {}
+        }, {
+            "TrainingMissionId": "exp_mission_005",
+            "Category": 1,
+            "LocationId": "SCH01",
+            "Detail": {
+                "TimeLimit": 300,
+                "TimerCountType": 0,
+                "Finishes": [],
+                "Rules": []
+            }
+        }, {
+            "TrainingMissionId": "exp_mission_006",
+            "Category": 1,
+            "LocationId": "SCH01",
+            "Detail": {
+                "TimeLimit": 300,
+                "TimerCountType": 0,
+                "Finishes": [],
+                "Rules": []
+            }
+        }
+    ]
+}
