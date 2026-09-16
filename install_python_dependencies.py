@@ -9,5 +9,4 @@ subprocess.call(commands)
 
 print("")
 print("Installed required Python Modules")
-print("Press any button to close")
-input()
+input("Press Enter to exit...")
