@@ -4,19 +4,20 @@
 Download this server (`Code > Download ZIP`) and extract the archive.
 ## Running the Game Server
 1. Install [Python](https://www.python.org/downloads/release/python-3147/)
-2. Double-click `install_python_dependencies.py`
+2. Download [UV package manager](https://github.com/astral-sh/uv/releases/tag/0.12.15) for you platform
+2. Extract the archive and copy `uv` into the `Embleo` folder (where README.md file is)
 3. Open `src` folder
-4. Double-click `setup_server.py`
+4. Double-click `run_setup.py` (`uv` will download necessary Python dependencies)
 5. Type in (copy-paste) **Asset Server URL** into the newly open window and press Enter.
 
 The script will then download necessary files from the specified **Asset Server**. Wait for it to finish.
 
 (TODO: write a guide for self-hosting assets)
 
-6. Double-click `server.py` to start the **Game Server**.
+6. Double-click `run_server.py` to start the **Game Server**.
 
 ## Patching APK
-A phone or emulator with Android **11**-13 is required to install the game.
+A phone or emulator with Android 9-13 is required to install the game. Android 11 is recommended as it is confirmed working.
 
 Currently, only japanese APK (not XAPK) v.1.6.0  is supported (it has english language option). 
 
@@ -33,7 +34,7 @@ Since the **Game Server** is hosted locally, your phone needs to be in the same 
 
 ##	Success
 Finally, if:
-1. **Game Server** is running `/src/server.py`
+1. **Game Server** is running (`/src/run_server.py`)
 2. Your smartphone/emulator is in the same network as your computer that runs the **Game Server**
 3. **Asset Server** is running and reachable
 4. Patched APK was installed without errors

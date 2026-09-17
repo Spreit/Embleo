@@ -1305,7 +1305,7 @@ def root():
 	return "Offline server root. Put files under offline_responses/ matching request paths.\n"
 
 
-user_items_json_data = json.load(open("./data/user/UserItems.json", "r"))
+# user_items_json_data = json.load(open("./data/user/UserItems.json", "r"))
 
 unreleased_episodes = [
 	"pl005_ep002",
@@ -1549,7 +1549,7 @@ def api_user_register():
 	'''
 
 	response_json["User"] = user_data
-	response_json["UserItems"] = user_items_json_data
+	response_json["UserItems"] = load_json("./data/user/UserItems.json")
 
 	body = pack_json_response(response_json)
 	return Response(body, content_type=MSGPACK_CONTENT_TYPE)
@@ -1860,5 +1860,7 @@ if __name__ == "__main__":
 
 	if not os.path.exists("./post/"):
 		os.makedirs("./post/", exist_ok=True)
-
+	
+	# print("Current Working Directory:", os.getcwd())
+	
 	app.run(host="0.0.0.0", port=5001, debug=True)

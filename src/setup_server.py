@@ -194,6 +194,7 @@ def get_asset_server_link():
     is_url_valid = False
 
     # Check if there is Asset Server URL file
+    # print("Does asset_server_link.txt exist?", os.path.exists(asset_server_link_file))
     if os.path.exists(asset_server_link_file):
 
         with open(asset_server_link_file, "r") as f:
