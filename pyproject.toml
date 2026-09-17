@@ -11,6 +11,7 @@ requires-python = ">=3.10"
 
 authors = [
     { name = "Spreit" },
+    { name = "V" }
 ]
 
 description = "Embleo is a WIP server emulator for a vertical mobile anime game."
