@@ -1,3 +1,19 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# UV package manager, if it's put into base directory
+uv*
+uvw*
+uvx*
+
 # Not used
 src/modules/
 src/post/
@@ -11,7 +27,7 @@ src/data/food/
 src/data/masterdata/
 src/data/chronology.db
 
-src/scripts/uber-apk-signer-1.3.0.jar
+src/scripts/uber-apk-signer*
 
 # User data
 src/data/user/UserCharacter.json
@@ -31,7 +47,3 @@ src/server_config.txt
 src/cmd server.bat
 
 *.lnk
-
-# PyCharm things
-__pycache__
-*.pyc

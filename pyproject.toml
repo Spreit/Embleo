@@ -1,0 +1,27 @@
+[project]
+name = "Embleo"
+version = "0.1.0"
+dependencies = [
+    "requests>=2.34.2",
+    "msgpack>=1.2.2",
+    "Flask>=3.1.3",
+    "UnityPy>=1.25.3"
+]
+requires-python = ">=3.10"
+
+authors = [
+    { name = "Spreit" },
+]
+
+description = "Embleo is a WIP server emulator for a vertical mobile anime game."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+keywords = [
+    "private-server", "game-server", "mobile-game", "gacha", "flask"
+]
+
+[project.urls]
+Homepage = "https://github.com/Spreit/Embleo"
+Repository = "https://github.com/Spreit/Embleo.git"
