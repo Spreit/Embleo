@@ -224,9 +224,9 @@ def get_asset_server_link():
     return asset_server_link
 
 
-manifest = False
-download = False
-extract = False
+manifest = True
+download = True
+extract = True
 adapt_master_data = True
 adapt_scenario = True
 generate = True
