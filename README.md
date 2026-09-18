@@ -17,7 +17,7 @@ The script will then download necessary files from the specified **Asset Server*
 6. Double-click `run_server.py` to start the **Game Server**.
 
 ## Patching APK
-A phone or emulator with Android 9-13 is required to install the game. Android 11 is recommended as it is confirmed working.
+A phone or emulator with Android 9-12 is required to install the game. Android 11 is recommended as it is confirmed working.
 
 Currently, only japanese APK (not XAPK) v.1.6.0  is supported (it has english language option). 
 
