@@ -24,7 +24,7 @@ Currently, only japanese APK (not XAPK) v.1.6.0  is supported (it has english la
 1. Install [Java](https://www.java.com/en/download/manual.jsp)
 2. Download [uber-apk-signer-1.3.0.jar](https://github.com/patrickfav/uber-apk-signer/releases)
 3. Put `uber-apk-signer-1.3.0.jar` in `/src/scripts/` folder (this folder will also have "apk_patcher.py")
-4. Drag-and-drop the APK onto the `apk_patcher.py` file.
+4. Drag-and-drop the game **APK** onto the `apk_patcher.py` file.
 5. Type in **Game Server URL** and press Enter 
   -  You can find the URL in the **" \* Running on http://192..."** line after double-clicking the `server.py`. (Example URL: http://192.168.0.50:5001) 
 6. 2 patched APKs will appear in the same folder as your original APK.
