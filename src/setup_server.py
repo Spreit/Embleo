@@ -51,6 +51,13 @@ def does_file_exist(path):
 
 
 def download_file(url, output_folder=DOWNLOAD_FOLDER, force_redownload=False):
+    file_name_without_server_url = url[len(asset_server_link):]
+
+    # Save file at path
+    # print(file_name_without_server_url)
+
+    output_file_path = output_folder + file_name_without_server_url
+
     os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
 
     if does_file_exist(output_file_path):
@@ -69,13 +76,6 @@ def download_file(url, output_folder=DOWNLOAD_FOLDER, force_redownload=False):
         print("File not found:", url)
 
     file_data = response.content
-
-    file_name_without_server_url = url[len(asset_server_link):]
-
-    # Save file at path
-    # print(file_name_without_server_url)
-
-    output_file_path = output_folder + file_name_without_server_url
 
 
     with open(output_file_path, "wb") as of:
