@@ -43,3 +43,8 @@ Finally, if:
 You will see a disclaimer and the title screen after opening the game.
 
 Congradulations!
+
+# During play
+Account system doesn't work yet, you have to entering a nickname each time you start the game. Shortest nickname is any 2 letters and it is not saved by the game.
+
+The in-game saving system is also not functional. Instead, `/src/checkpoint.txt` is created and updated each time you reach a checkpoint during an episode. Starting an episode will put you at the last in-game checkpoint, most of the time the UI will be hidden, besides the control pad. You can delete the `/src/checkpoint.txt` file to start the episode from the beggining.
