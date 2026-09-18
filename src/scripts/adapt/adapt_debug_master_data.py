@@ -100,7 +100,7 @@ def adapt_debug_master_data(extract_folder, output_folder="./data/"):
         adapted_file_path = master_data_output_folder + adapt_name + ".json"
         
         debug_data: dict
-        with open(debug_file_path, "r") as f:
+        with open(debug_file_path, "r", encoding="UTF-8") as f:
             debug_data = json.load(f)
 
         adapted_data = adapt_function(debug_data)
