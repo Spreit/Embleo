@@ -51,6 +51,14 @@ def does_file_exist(path):
 
 
 def download_file(url, output_folder=DOWNLOAD_FOLDER, force_redownload=False):
+    os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
+
+    if does_file_exist(output_file_path):
+        print("File", output_file_path, "is already downloaded")
+
+        if not force_redownload:
+            return
+    
     response = requests.get(url)
 
     if response.status_code == 200:
@@ -69,13 +77,6 @@ def download_file(url, output_folder=DOWNLOAD_FOLDER, force_redownload=False):
 
     output_file_path = output_folder + file_name_without_server_url
 
-    os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
-
-    if does_file_exist(output_file_path):
-        print("File", output_file_path, "is already downloaded")
-
-        if not force_redownload:
-            return
 
     with open(output_file_path, "wb") as of:
         of.write(file_data)
