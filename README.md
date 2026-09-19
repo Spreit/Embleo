@@ -25,7 +25,8 @@ Currently, only japanese APK (not XAPK) v.1.6.0  is supported (it has english la
 2. Download [uber-apk-signer-1.3.0.jar](https://github.com/patrickfav/uber-apk-signer/releases)
 3. Put `uber-apk-signer-1.3.0.jar` in `/src/scripts/` folder (this folder will also have "apk_patcher.py")
 4. Drag-and-drop the game **APK** onto the `apk_patcher.py` file.
-5. Type in **Game Server URL** and press Enter 
+- You can also put the APK in the same folder as `apk_patcher.py` and double-click the script.
+6. Type in **Game Server URL** and press Enter 
   -  You can find the URL in the **" \* Running on http://192..."** line after double-clicking the `server.py`. (Example URL: http://192.168.0.50:5001) 
 6. 2 patched APKs will appear in the same folder as your original APK.
 7. Install the APK with **edited-aligned-debugSigned.apk** at the end
@@ -50,3 +51,6 @@ Account system doesn't work yet, you have to enter a nickname each time you star
 The in-game saving system is also not functional. Instead, `/src/checkpoint.txt` is created and updated each time you reach a checkpoint during an episode. Starting an episode again will put you at the last in-game checkpoint, most of the time the UI will be hidden, except the control pad. You can delete the `/src/checkpoint.txt` file to start the episode from the beginning.
 
 If you encounter any problems with episode progression or other things, [open a new issue or comment under existing one.](https://github.com/Spreit/Embleo/issues)
+
+# Emulator Settings
+For Bluestacks, go to `Settings > Screen` and set `Pixel Density` to **320 DPI (High)**. Resolution should be set to `1080x810`, `1440x1080` or `1920x1440` for wider view.
