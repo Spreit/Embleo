@@ -37,15 +37,20 @@ def get_current_url(level0_bytes):
 def patch_game_server_url_in_level0(new_url, level0_bytes):
     patched_level0 = bytearray(level0_bytes)
 
+    new_url_length = len(new_url)
+
     # Clear current link
     for i in range(max_length + 1):
         patched_level0[url_offset + i] = 0
 
     # Paste new link
-    for i in range(len(new_url)):
+    for i in range(new_url_length):
         patched_level0[url_offset + i] = ord(new_url[i])
 
-    print(get_current_url(patched_level0))
+    # Patch link size
+    patched_level0[url_offset - 4] = new_url_length
+
+    print(new_url_length, get_current_url(patched_level0))
 
     return bytes(patched_level0)
 
