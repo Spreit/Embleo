@@ -16,7 +16,9 @@ new_server_url = "replace_this_with_server_address"
 # Variables
 max_length = 35
 url_offset = 0x00011364
-colopl_mention_offset = 0x00011390
+
+second_link_length = 16
+second_url_offset = 0x00011388
 
 level0_path = "assets/bin/Data/level0"
 
@@ -52,7 +54,12 @@ def patch_game_server_url_in_level0(new_url, level0_bytes):
 
     print(new_url_length, get_current_url(patched_level0))
 
+    # Zero out second link
+    for i in range(second_link_length):
+        patched_level0[second_url_offset + i] = 0
+
     return bytes(patched_level0)
+
 
 
 if __name__ == "__main__":
