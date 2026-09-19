@@ -1,6 +1,7 @@
 import subprocess
 import sys
 import zipfile
+import os
 
 '''
 TODO
@@ -50,12 +51,15 @@ def patch_game_server_url_in_level0(new_url, level0_bytes):
 
 if __name__ == "__main__":
 
+    working_directory = os.getcwd()
+
     # Check dragged and dropped APK
     try:
         path_to_apk = sys.argv[1]
         print(path_to_apk)
     except IndexError:
         print("No file dropped, using script values")
+        print("Looking for APK at ", working_directory)
 
     # Check extension
     if path_to_apk[-4:] == "xapk":
@@ -66,6 +70,12 @@ if __name__ == "__main__":
     current_url: str
     current_level0_bytes: bytes
 
+    if not os.path.isfile(path_to_apk):
+        print("Couldn't find game APK at", working_directory)
+        input()
+    else:
+        print("Found APK")
+    
     with zipfile.ZipFile(path_to_apk, "r", compression=zipfile.ZIP_DEFLATED) as apk:
         with apk.open(level0_path, mode="r") as level0:
             current_level0_bytes = level0.read()
