@@ -48,3 +48,5 @@ Congradulations!
 Account system doesn't work yet, you have to enter a nickname each time you start the game. Shortest nickname is any 2 letters and it is not saved by the game.
 
 The in-game saving system is also not functional. Instead, `/src/checkpoint.txt` is created and updated each time you reach a checkpoint during an episode. Starting an episode again will put you at the last in-game checkpoint, most of the time the UI will be hidden, except the control pad. You can delete the `/src/checkpoint.txt` file to start the episode from the beginning.
+
+If you encounter any problems with episode progression or other things, [open a new issue or comment under existing one.](https://github.com/Spreit/Embleo/issues)
