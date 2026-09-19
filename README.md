@@ -50,3 +50,6 @@ Account system doesn't work yet, you have to enter a nickname each time you star
 The in-game saving system is also not functional. Instead, `/src/checkpoint.txt` is created and updated each time you reach a checkpoint during an episode. Starting an episode again will put you at the last in-game checkpoint, most of the time the UI will be hidden, except the control pad. You can delete the `/src/checkpoint.txt` file to start the episode from the beginning.
 
 If you encounter any problems with episode progression or other things, [open a new issue or comment under existing one.](https://github.com/Spreit/Embleo/issues)
+
+# Emulator Settings
+For Bluestacks, go to `Settings > Screen` and set `Pixel Density` to **320 DPI (High)**. Resolution should be set to `1080x810`, `1440x1080` or `1920x1440` for wider view.
