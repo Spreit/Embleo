@@ -60,6 +60,7 @@ if __name__ == "__main__":
     except IndexError:
         print("No file dropped, using script values")
         print("Looking for APK at ", working_directory)
+        path_to_apk = working_directory + "/lumi_apk.apk"
 
     # Check extension
     if path_to_apk[-4:] == "xapk":
@@ -74,7 +75,7 @@ if __name__ == "__main__":
         print("Couldn't find game APK at", working_directory)
         input()
     else:
-        print("Found APK")
+        print("Found APK at", path_to_apk)
     
     with zipfile.ZipFile(path_to_apk, "r", compression=zipfile.ZIP_DEFLATED) as apk:
         with apk.open(level0_path, mode="r") as level0:
