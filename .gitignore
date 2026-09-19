@@ -47,3 +47,4 @@ src/server_config.txt
 src/cmd server.bat
 
 *.lnk
+*.apk

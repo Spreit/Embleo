@@ -6,6 +6,7 @@ import os
 '''
 TODO
 Add checks
+Auto-scan folder for .apk file
 '''
 
 # Alternative method to patch an APK
@@ -53,6 +54,8 @@ if __name__ == "__main__":
 
     working_directory = os.getcwd()
 
+    # print(os.listdir())
+
     # Check dragged and dropped APK
     try:
         path_to_apk = sys.argv[1]
@@ -60,7 +63,13 @@ if __name__ == "__main__":
     except IndexError:
         print("No file dropped, using script values")
         print("Looking for APK at ", working_directory)
-        path_to_apk = working_directory + "/lumi_apk.apk"
+
+        file_list = os.listdir()
+
+        for file in file_list:
+
+            if ".apk" in file:
+                path_to_apk = working_directory + file
 
     # Check extension
     if path_to_apk[-4:] == "xapk":
