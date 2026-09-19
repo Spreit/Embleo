@@ -17,7 +17,7 @@ The script will then download necessary files from the specified **Asset Server*
 6. Double-click `run_server.py` to start the **Game Server**.
 
 ## Patching APK
-A phone or emulator with Android 9-13 is required to install the game. Android 11 is recommended as it is confirmed working.
+A phone or emulator with Android 9-12 is required to install the game. Android 11 is recommended as it is confirmed working.
 
 Currently, only japanese APK (not XAPK) v.1.6.0  is supported (it has english language option). 
 
@@ -43,3 +43,10 @@ Finally, if:
 You will see a disclaimer and the title screen after opening the game.
 
 Congradulations!
+
+# During play
+Account system doesn't work yet, you have to enter a nickname each time you start the game. Shortest nickname is any 2 letters and it is not saved by the game.
+
+The in-game saving system is also not functional. Instead, `/src/checkpoint.txt` is created and updated each time you reach a checkpoint during an episode. Starting an episode again will put you at the last in-game checkpoint, most of the time the UI will be hidden, except the control pad. You can delete the `/src/checkpoint.txt` file to start the episode from the beginning.
+
+If you encounter any problems with episode progression or other things, [open a new issue or comment under existing one.](https://github.com/Spreit/Embleo/issues)
