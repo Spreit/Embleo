@@ -69,12 +69,13 @@ if __name__ == "__main__":
         print("No file dropped, using script values")
         print("Looking for APK at ", working_directory)
 
-        file_list = os.listdir()
+        file_list = os.listdir("./")
 
         for file in file_list:
 
             if ".apk" in file:
-                path_to_apk = working_directory + file
+                path_to_apk = working_directory + "/" + file
+                print(path_to_apk)
 
     # Check extension
     if path_to_apk[-4:] == "xapk":
