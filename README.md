@@ -19,7 +19,7 @@ The script will then download necessary files from the specified **Asset Server*
 ## Patching APK
 A phone or emulator with Android 9-12 is required to install the game. Android 11 is recommended as it is confirmed working.
 
-Currently, only japanese APK (not XAPK) v.1.6.0  is supported (it has english language option). 
+Game APK v.1.6.0 (not XAPK) is required. 
 
 1. Install [Java](https://www.java.com/en/download/manual.jsp)
 2. Download [uber-apk-signer-1.3.0.jar](https://github.com/patrickfav/uber-apk-signer/releases)
