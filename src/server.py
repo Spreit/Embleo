@@ -804,26 +804,17 @@ def episode_preload():
 def get_episode_character_visual_settings(episode_id):
 	visual_settings = []
 
-	# From debug scenario, for now
-	episode_scenario_master_data = load_json("./data/extract/masterdatadebug/scenario/{0}.json".format(episode_id))
-	for entry in episode_scenario_master_data["Datas"]:
+	# From debug checkpoint
+	episode_checkpoint_data = load_json("./data/extract/masterdatadebug/episode/{0}/EpisodeCheckPointMasterDataObject.json".format(episode_id))
 
-		progress_type = entry["Condition"]["ProgressType"]
+	for entry in episode_checkpoint_data["Datas"]:
+		visual_setting = {
+			"ScenarioNo": entry["_startScenarioNo"],
+			"Ids": entry["PartyVisualIds"]
+		}
 
-		if progress_type == 7:
-			visual_setting = {
-				"ScenarioNo": 0,
-				"Ids": []
-			}
-
-			party_visual_id_list = entry["Condition"]["ProgressEditParty"]["partyVisualIds"]
-
-			if party_visual_id_list != [] and party_visual_id_list[0] != "":
-				visual_setting["ScenarioNo"] = entry["ScenarioNo"]
-				visual_setting["Ids"] = party_visual_id_list
-
-				print(visual_setting)
-				visual_settings.append(visual_setting)
+		# print(visual_setting)
+		visual_settings.append(visual_setting)
 
 	return visual_settings
 
@@ -847,19 +838,7 @@ def episode_start():
 
 	start_data["CharacterDetail"] = fill_episode_character_detail()
 	
-	'''
-	# Add default character setting at the start
-	base_character_visual = {
-		"ScenarioNo": 1,
-		"Ids": [episode_character_id + "_04_001"]
-	}
-	
-	start_data["CharacterDetail"]["baseVisual"]["settings"].append(base_character_visual)
-	'''
-	
 	start_data["CharacterDetail"]["baseVisual"]["settings"] = get_episode_character_visual_settings(episode_id)
-	
-	
 	
 	# Just a list of masterdata ids?
 	start_data["EnemyDetail"] = fill_enemy_detail_by_episode_id(episode_id)
