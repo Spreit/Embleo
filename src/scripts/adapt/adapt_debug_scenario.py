@@ -91,7 +91,7 @@ def adapt_debug_scenario_entries(debug_scenario_data):
     # Iterate through all entries
     for debug_entry in debug_scenario_data["Datas"]:
         scenario_id = debug_entry["Id"]  # String, not number
-        scenario_no = debug_entry["ScenarioNo"]  # String, not number
+        scenario_no = debug_entry["ScenarioNo"]
         debug_condition = debug_entry["Condition"]
         ProgressType = debug_condition["ProgressType"]
 
@@ -103,12 +103,15 @@ def adapt_debug_scenario_entries(debug_scenario_data):
         }
         # Are ProgressType past that need to be adapted?
 
-        if ProgressType > 18:
-            pass
 
         # WTalk
         if ProgressType == 1000:
+            ProgressType = 2
             adapted_scenario_entry["ProgressType"] = 2
+
+        if ProgressType > 18:
+            continue
+            pass
 
         # RouteStart
         if ProgressType == 1001:
