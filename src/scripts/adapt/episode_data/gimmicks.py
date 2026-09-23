@@ -71,6 +71,9 @@ def adapt_episode_layout_gimmick(entry):
 			"WarpPointId": params["_warpPointID"]
 		}
 
+	# Mana Wall. Present at the end of Hugo's Ep.1
+	elif action_type == 4:
+		pass
 
 	# GimmickExecute, responsible for various things
 	# Does it need filling in?
