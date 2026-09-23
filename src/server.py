@@ -481,6 +481,9 @@ def fill_scenario_group_from_adapted_scenario(episode_id):
 			if scenario_group_name == "Kills":
 				continue
 
+			if scenario_group_name == "EnemyParams":
+				continue
+
 		if SKIP_VIDEOS:
 			if scenario_group_name == "Demos":
 				continue
@@ -601,7 +604,11 @@ def fill_scenario_list_from_adapted_scenario(episode_id):
 			continue
 
 		if SKIP_BATTLES:
+			# Kills
 			if entry["ProgressType"] == 3:
+				continue
+			# EnemyParams
+			if entry["ProgressType"] == 14:
 				continue
 
 		if SKIP_VIDEOS:
@@ -815,6 +822,8 @@ def get_episode_character_visual_settings(episode_id):
 
 		# print(visual_setting)
 		visual_settings.append(visual_setting)
+
+	# Add "fixes" from scenario files?
 
 	return visual_settings
 
