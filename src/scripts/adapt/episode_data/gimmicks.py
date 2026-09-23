@@ -83,7 +83,7 @@ def adapt_episode_layout_gimmick(entry):
 	elif action_type == 4:
 		pass
 
-	# Mana Wall. Present at the end of Hugo's Ep.1
+	# Mana Wall. Present in Celia's Ep1 and Bastien's Ep1
 	# Doesn't need filling in
 	elif action_type == 5:
 		pass
