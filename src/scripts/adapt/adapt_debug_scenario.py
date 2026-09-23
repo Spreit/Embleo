@@ -109,17 +109,19 @@ def adapt_debug_scenario_entries(debug_scenario_data):
             ProgressType = 2
             adapted_scenario_entry["ProgressType"] = 2
 
-        if ProgressType > 18:
-            continue
-            pass
-
         # RouteStart
         if ProgressType == 1001:
-            adapted_scenario_entry["ProgressType"] = 1001
+            ProgressType = 1
+            adapted_scenario_entry["ProgressType"] = 1
 
         # RouteEnd
         if ProgressType == 1002:
-            adapted_scenario_entry["ProgressType"] = 1002
+            ProgressType = 1
+            adapted_scenario_entry["ProgressType"] = 1
+
+        if ProgressType > 18:
+            continue
+            pass
 
         # TimerStart
         if ProgressType == 1003:
