@@ -64,6 +64,10 @@ def adapt_episode_layout_gimmick(entry):
 			"WarpPointId": params["_warpPointID"]
 		}
 
+	# Unused?
+	elif action_type == 2:
+		return {}
+
 	# CrawlSide (FixedDirectionMovement)
 	# Crawling or moving along the wall 
 	elif action_type == 3:
@@ -71,12 +75,16 @@ def adapt_episode_layout_gimmick(entry):
 			"WarpPointId": params["_warpPointID"]
 		}
 
-	# Mana Wall. Present at the end of Hugo's Ep.1
+	# GimmickExecute
+	# Does it need filling in?
+	# Mana Wall in Hugo's Ep1
+	# Somethig in Lisette's Ep2
+	# Something in both Crossroads
 	elif action_type == 4:
 		pass
 
-	# GimmickExecute, responsible for various things
-	# Does it need filling in?
+	# Mana Wall. Present at the end of Hugo's Ep.1
+	# Doesn't need filling in
 	elif action_type == 5:
 		pass
 
@@ -86,7 +94,7 @@ def adapt_episode_layout_gimmick(entry):
 		gimmick["MoveLimit"] = {
 			"CollisionType": params["_collisionType"],
 			"CollisionSize": SerVec3toVec3(params["_collisionSize"]),
-			"MoveOutEvent": {},
+			"MoveOutEvent": dict,
 			"NpcLimitLength": params["_npcLimitLength"]
 		}
 
@@ -175,6 +183,14 @@ def adapt_episode_layout_gimmick(entry):
 	elif action_type == 18:
 		pass
 
+	# Warp portals from Charle's Ep 1
+	elif action_type == 19:
+		gimmick["WarpPortal"] = {
+			"TargetWarpPointId": params["_targetWarpPointID"],
+			"ExitEffectDisable": params["_exitEffectDisable"],
+			"IsOneWay": params["_isOneWay"]
+		}
+
 	# Patara Hardle (twigs on the road), doesn't need special properties
 	elif action_type == 20:
 		pass
@@ -213,37 +229,29 @@ def adapt_episode_layout_gimmick(entry):
 		pass
 
 	# Rope trap that has a forced introduction scene in Raoul's Ep.1
-	# Something is missing and makes app error out
 	elif action_type == 24:
-		gimmick["RopeTrap"]: {
+		gimmick["RopeTrap"] = {
 			"Damage": params["_damage"],
 			"MazzleReverse": params["_mazzleReverse"]
 		}
 
-		# print("MazzleReverse", params["_mazzleReverse"])
-
-		return {}
-
 	# Pressure plate puzzle from Raoul Ep.1 and right at the end of Raoul Ep.2
-
-	# Pressure plate puzzle switch
+	# Pressure plate puzzle switch. Doesn't need filling in
 	elif action_type == 25:
-		# Doesn't need special properties
-		# Doesn't open the door, for some reason.
 		pass
-	# return {}
 
 	# Pressure plate puzzle reset switch
 	elif action_type == 26:
-		# Something is missing and makes app error out
-		
-		gimmick["ResetSwitch"]: {
+		gimmick["ResetSwitch"] = {
 			"TargetGimmickIds": params["_targetGimmickIDs"]
 		}
-		
-		print(params["_targetGimmickIDs"])
-		
-		return {}
+
+	# Gate levers in Maxime's Ep 1
+	elif action_type == 27:
+		gimmick["KillEnemyExecute"] = {
+			"TargetEnemyId": params["_targetEnemyID"]
+		}
+
 	else:
 		return {}
 
