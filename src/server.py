@@ -861,6 +861,15 @@ def episode_start():
 	# Fills Scenarios, LayoutGroup, scenarioGroup, eventDrops
 	start_data["EpisodeDetail"] = fill_episode_detail_by_episode_id(episode_id)
 
+	# Fake? saving system
+	fake_checkpoint_data = {}
+
+	if does_file_exist(FAKE_CHECKPOINT_PATH):
+		fake_checkpoint_data = load_json(FAKE_CHECKPOINT_PATH)
+
+	if episode_id in fake_checkpoint_data:
+		start_data["EpisodeDetailUser"]["startScenarioNo"] = fake_checkpoint_data[episode_id]
+
 	# EpisodeDetailUser
 
 	start_data["EpisodeDetailUser"]["playCharacters"][0]["characterId"] = episode_character_id
