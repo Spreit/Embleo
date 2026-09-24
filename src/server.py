@@ -832,11 +832,17 @@ def get_episode_character_visual_settings(episode_id):
 def episode_start():
 	print("Episode start endpoint")
 
-	# Would be very useful if the game sent something other than episode id
+	# If EpisodeChapterStatus (or simply Status in UserChapter) is set to 1/2/3/4
+	# Pressing chapter button will also send chapter ID
 	request_data = msgpack.unpackb(request.data)
 	print(request_data)
 
 	episode_id = request_data["episodeId"]
+
+	if "chapterId" in request_data:
+		chapter_id = request_data["chapterId"]
+		print("Chapter ID", chapter_id)
+
 	episode_character_id, _ = episode_id.split("_")
 
 	# Fill episode start data
@@ -861,15 +867,6 @@ def episode_start():
 	start_data["EpisodeDetailUser"]["playCharacters"][0]["hp"] = 1000000
 	start_data["EpisodeDetailUser"]["playCharacters"][0]["sp"] = 100000
 
-	# Fake saving system
-	fake_checkpoint_data = {}
-
-	if does_file_exist(FAKE_CHECKPOINT_PATH):
-		fake_checkpoint_data = load_json(FAKE_CHECKPOINT_PATH)
-
-	if episode_id in fake_checkpoint_data:
-		start_data["EpisodeDetailUser"]["startScenarioNo"] = fake_checkpoint_data[episode_id]
-
 	# MissionDetail
 	# Secret Mission Detail from episode master data
 
@@ -878,6 +875,51 @@ def episode_start():
 
 	return pack_json_response(start_data)
 
+@app.route("/api/episode/continue", methods=["GET", "POST"])
+def episode_continue():
+	print("Episode continue endpoint")
+
+	# Would be very useful if the game sent something other than episode id
+	request_data = msgpack.unpackb(request.data)
+	print(request_data)
+
+	episode_id = request_data["episodeId"]
+	episode_character_id, _ = episode_id.split("_")
+
+	# Fill episode start data
+	start_data = load_json("./offline_responses/api/episode/continue.json")
+
+	# Probably can be anything
+	start_data["EpisodeToken"] = episode_id
+
+	start_data["CharacterDetail"] = fill_episode_character_detail()
+
+	start_data["CharacterDetail"]["baseVisual"]["settings"] = get_episode_character_visual_settings(episode_id)
+
+	# Just a list of masterdata ids?
+	start_data["EnemyDetail"] = fill_enemy_detail_by_episode_id(episode_id)
+
+	# Fills Scenarios, LayoutGroup, scenarioGroup, eventDrops
+	start_data["EpisodeDetail"] = fill_episode_detail_by_episode_id(episode_id)
+
+	# EpisodeDetailUser
+	start_data["EpisodeDetailUser"]["playCharacters"][0]["characterId"] = episode_character_id
+	start_data["EpisodeDetailUser"]["playCharacters"][0]["hp"] = 1000000
+	start_data["EpisodeDetailUser"]["playCharacters"][0]["sp"] = 100000
+
+	# Fake? saving system
+	fake_checkpoint_data = {}
+
+	if does_file_exist(FAKE_CHECKPOINT_PATH):
+		fake_checkpoint_data = load_json(FAKE_CHECKPOINT_PATH)
+
+	if episode_id in fake_checkpoint_data:
+		start_data["EpisodeDetailUser"]["startScenarioNo"] = fake_checkpoint_data[episode_id]
+
+	# MasterGroup
+	start_data["MasterGroup"] = fill_episode_master_group()
+
+	return pack_json_response(start_data)
 
 @app.route("/api/episode/retire", methods=["GET", "POST"])
 def episode_retire():
@@ -1004,7 +1046,7 @@ def level_up_camp_start():
 	return pack_json_response(start_data)
 
 
-def reward_result():
+def reward_result(episode_id="", scenario_no=""):
 	result = {
 		"User": load_json("./data/user/User.json"),
 		"UserPresents": [],
@@ -1033,6 +1075,9 @@ def fake_checkpoint(episode_id, scenarioNo):
 		checkpoint = load_json(checkpoint_path)
 
 	checkpoint[episode_id] = scenarioNo
+
+	if scenarioNo == 0:
+		del checkpoint[episode_id]
 
 	save_json(checkpoint_path, checkpoint)
 
@@ -1073,9 +1118,50 @@ def episode_checkpoint():
 	}
 	'''
 
+	# Put UserEpisode at continue mode
+	user_episode = load_json("./data/user/UserEpisode.json")
+
+	for episode_entry in user_episode:
+		if episode_entry["EpisodeId"] == request_info["episodeId"]:
+			# Set Continue status
+			if episode_entry["Status"] < 32768:
+				episode_entry["Status"] += 32768
+
+			break
+
+	save_json("./data/user/UserEpisode.json", user_episode)
+
 	# checkpoint_response = {}
 
 	return pack_json_response(checkpoint_response)
+
+
+@app.route("/api/episode/reset", methods=["GET", "POST"])
+def episode_reset():
+	request_info = msgpack.unpackb(request.data)
+	print("Deleting save data for", request_info["episodeId"])
+	episode_id = request_info["episodeId"]
+
+	reset_response = {
+		"EpisodeId": episode_id
+	}
+
+	fake_checkpoint(episode_id, 0)
+
+	# Put UserEpisode at continue mode
+	user_episode = load_json("./data/user/UserEpisode.json")
+
+	for episode_entry in user_episode:
+		if episode_entry["EpisodeId"] == episode_id:
+			# Set Continue status
+			if episode_entry["Status"] >= 32768:
+				episode_entry["Status"] -= 32768
+
+			break
+
+	save_json("./data/user/UserEpisode.json", user_episode)
+
+	return pack_json_response(reset_response)
 
 
 @app.route("/api/episode/chronology-list", methods=["GET", "POST"])
