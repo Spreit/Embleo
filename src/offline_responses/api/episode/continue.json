@@ -1,3 +1,37 @@
 {
+    "EpisodeToken": "fill_with_episode_id_or_something",
+    "CharacterDetail": {},
+    "EnemyDetail": {},
+    "EpisodeDetail": {},
+    "EpisodeDetailUser": {
+        "status": 0,
 
+        "startScenarioNo": 0,
+        "revivalPointId": "",
+        "revivalScenarioNo": 0,
+
+        "playUser": {
+            "money": 0,
+            "fieldCoin": 0,
+            "skill": 1000,
+            "magic": 1000,
+            "food": 0
+        },
+        "playCharacters": [{
+                "characterId": "pl002",
+                "hp": 240,
+                "sp": 45,
+                "level": 1,
+                "exp": 0
+            }
+        ],
+        "drops": [],
+        "secretMission": {
+			"Statuses": []
+		},
+        "acquireStaticItemIds": [],
+        "tutorialGuideIds": [],
+        "conqueredPoint": 0
+    },
+    "MasterGroup": {}
 }
