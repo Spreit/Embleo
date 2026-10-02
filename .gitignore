@@ -16,7 +16,8 @@ uvx*
 
 # Not used
 src/modules/
-src/post/
+src/post/*
+!src/post/.gitkeep
 src/response_skeletons/
 
 # Files and folders that are suppose to be downloaded, extracted and adapted
@@ -38,7 +39,8 @@ src/data/user/top
 
 # Other files
 src/modules/
-src/post/
+src/post/*
+!src/post/.gitkeep
 src/response_skeletons/
 
 src/asset_server_link.txt
