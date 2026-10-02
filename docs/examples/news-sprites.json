@@ -1,0 +1,9 @@
+{
+    "NewsId": "sprite-example",
+    "Title": "News sprite examples",
+    "Content": "Built-in news sprites (index 0-13):<br><br>0: <sprite=0><br>1: <sprite=1><br>2: <sprite=2><br>3: <sprite=3><br>4: <sprite=4><br>5: <sprite=5><br>6: <sprite=6><br>7: <sprite=7><br>8: <sprite=8><br>9: <sprite=9><br>10: <sprite=10><br>11: <sprite=11><br>12: <sprite=12><br>13: <sprite=13>",
+    "StartAt": 1658250000,
+    "EndAt": 1784480400,
+    "IsNew": false,
+    "Status": 1
+}

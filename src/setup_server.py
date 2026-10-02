@@ -11,6 +11,7 @@ from scripts.adapt.adapt_chronology_for_server import generate_character_chronol
 from scripts.generate.generate_episode_master_data import generate_episode_master_data
 from scripts.generate.generate_temp_level_curve import generate_character_curve_list, generate_equipment_curve_list
 from scripts.generate.generate_save_file import generateSaveFile
+from scripts.generate.generate_server_news import ask_news_settings, generate_server_news
 
 '''
 TODO
@@ -235,7 +236,7 @@ generate = True
 save_data = True
 
 
-def setup(asset_server_link):
+def setup(asset_server_link, news_settings=None):
 
     if manifest:
         print("Downloading and extracting manifest file")
@@ -291,13 +292,16 @@ def setup(asset_server_link):
         save_data_path = "./data/user/"
         generateSaveFile(save_data_path)
 
+    generate_server_news(news_settings)
+
 
 if __name__ == "__main__":
     asset_server_link = get_asset_server_link()
 
     print("Asset Server URL:", asset_server_link)
 
-    setup(asset_server_link)
+    news_settings = ask_news_settings()
+    setup(asset_server_link, news_settings)
 
     print("")
     print("Finished setting up the server")
