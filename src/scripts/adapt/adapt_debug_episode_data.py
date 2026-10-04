@@ -1,7 +1,9 @@
 import os
 import json
 
-from .episode_data.breakables import adapt_breakables_for_episode_layout
+from .episode_data.breakables import (
+    adapt_breakables_for_episode_layout, adapt_breakable_items_for_episode_layout,
+)
 from .episode_data.checkpoints import adapt_checkpoints_for_episode_layout
 from .episode_data.enemies import adapt_episode_enemies_for_episode_layout
 from .episode_data.gimmicks import adapt_gimmicks_for_episode_layout
@@ -29,6 +31,11 @@ layout_parts = [
         "GroupName": "Breakables",
         "FileName": "EpisodeBreakableMasterDataObject",
         "Function": adapt_breakables_for_episode_layout
+    },
+    {
+        "GroupName": "Items",
+        "FileName": "EpisodeBreakableMasterDataObject",
+        "Function": adapt_breakable_items_for_episode_layout
     },
     {
         "GroupName": "CheckPoints",
