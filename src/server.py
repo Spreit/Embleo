@@ -24,7 +24,10 @@ import urllib
 from pathlib import Path
 
 import msgpack
-from flask import Flask, Response, request
+from flask import Flask, Response, g, has_request_context, request, url_for
+
+from accounts import AccountError, AccountStore, decode_icon, default_saves, save_key
+from profiles import add_all_emblems, noble_dates, utc_date
 
 from scripts.adapt.adapt_debug_episode_data import fill_episode_layout_group_by_episode_id
 
@@ -59,6 +62,96 @@ app = Flask(__name__)
 BASE_DIR = Path(__file__).resolve().parent
 RESP_DIR = BASE_DIR / "offline_responses"
 
+app.config["ACCOUNT_DB"] = os.environ.get(
+	"EMBLEO_ACCOUNT_DB", str(BASE_DIR / "data/user/top/accounts.sqlite3"))
+app.config["ACCOUNT_DEFAULTS"] = default_saves
+app.config["MAX_CONTENT_LENGTH"] = 4 * 1024 * 1024
+app.config["ONLINE_TIMEOUT_SECONDS"] = 300
+
+# These constructors explicitly disable authentication in the original client.
+PUBLIC_API_PATHS = frozenset({
+	"/api/game/heartbeat", "/api/game/provision", "/api/log/anonymous-action",
+	"/api/privacy-policy/get-terms-url", "/api/server-message/anonymous-list",
+	"/api/user/get-bnid-migration-info", "/api/user/bnid-migration",
+	"/api/user/get-migration-info", "/api/user/login-migration",
+})
+
+
+@app.before_request
+def resolve_account():
+	if not request.path.startswith("/api/"):
+		return
+	if request.path in PUBLIC_API_PATHS:
+		return
+	header = request.headers.get("Authorization", "")
+	token = header[7:] if header.startswith("Bearer ") else ""
+	if not token and request.path != "/api/user/register":
+		return account_error_response("Account login required.", 401)
+	g.account_store = AccountStore(app.config["ACCOUNT_DB"])
+	g.account_id = g.account_store.authenticate(token) if token else None
+	if token and not g.account_id:
+		return account_error_response("Invalid account token.", 401)
+
+
+@app.after_request
+def finish_account_request(response):
+	store = getattr(g, "account_store", None)
+	if store:
+		if response.status_code < 400:
+			if getattr(g, "account_id", None):
+				now = int(time.time())
+				if request.path in ("/api/user/login", "/api/user/register"):
+					# An authenticated register retry does not create a new login.
+					if request.path.endswith("/login") or getattr(g, "issued_token", None):
+						store.record_login(g.account_id, now, request.path.rsplit("/", 1)[-1])
+				store.record_activity(g.account_id, now)
+			store.connection.commit()
+		else:
+			store.connection.rollback()
+		if getattr(g, "issued_token", None) and response.status_code < 400:
+			response.headers["Authorization"] = "Bearer " + g.issued_token
+	if request.path.startswith("/api/") and response.status_code < 400:
+		response.content_type = "application/x-msgpack"
+	if getattr(g, "account_id", None):
+		response.headers["Cache-Control"] = "no-store"
+	return response
+
+
+@app.teardown_request
+def close_account_request(error):
+	store = getattr(g, "account_store", None)
+	if store:
+		store.close()
+
+
+def account_error_response(message, status=400):
+	return Response(msgpack.packb({"error": message}, use_bin_type=True),
+		status=status, content_type="application/x-msgpack")
+
+
+@app.errorhandler(AccountError)
+def handle_account_error(error):
+	return account_error_response(str(error))
+
+
+def request_object():
+	try:
+		value = msgpack.unpackb(request.data, raw=False)
+	except (ValueError, TypeError, msgpack.UnpackException) as error:
+		raise AccountError("Invalid MessagePack request.") from error
+	if not isinstance(value, dict):
+		raise AccountError("Request must be an object.")
+	return value
+
+
+def current_account_save(path):
+	key = save_key(path)
+	if key is not None:
+		if not has_request_context() or not getattr(g, "account_id", None):
+			raise AccountError("Account login required.")
+		return g.account_store, g.account_id, key
+	return None
+
 MSGPACK_CONTENT_TYPE = "application/x-msgpack"
 
 # app.register_blueprint(challenge_mission, url_prefix="/api/challenge-mission/")
@@ -79,8 +172,10 @@ def resolve_response_path(req_path: str):
 	if not rel:
 		return None, None
 
-	json_path = RESP_DIR / f"{rel}.json"
-	msgpack_path = RESP_DIR / f"{rel}.msgpack"
+	json_path = (RESP_DIR / f"{rel}.json").resolve()
+	msgpack_path = (RESP_DIR / f"{rel}.msgpack").resolve()
+	if not json_path.is_relative_to(RESP_DIR) or not msgpack_path.is_relative_to(RESP_DIR):
+		raise AccountError("Invalid response path.")
 	return json_path, msgpack_path
 
 
@@ -105,6 +200,10 @@ def load_for_request(req_path: str) -> bytes:
 
 
 def does_file_exist(path):
+	account = current_account_save(path)
+	if account:
+		store, account_id, key = account
+		return store.exists(account_id, key)
 	if os.path.isfile(path):
 		return True
 
@@ -112,11 +211,27 @@ def does_file_exist(path):
 
 
 def load_json(path):
+	account = current_account_save(path)
+	if account:
+		store, account_id, key = account
+		value = store.read(account_id, key)
+		if key == "UserParameter.json":
+			value["NobleStartAtUnix"], value["NobleEndAtUnix"] = noble_dates()
+			value.update(store.relationship_counts(account_id))
+		return value
+	path = Path(path)
+	if not path.is_absolute():
+		path = BASE_DIR / path
 	with open(path, "r", encoding='utf-8') as f:
 		return json.load(f)
 
 
 def save_json(path, data):
+	account = current_account_save(path)
+	if account:
+		store, account_id, key = account
+		store.write(account_id, key, data)
+		return
 	with open(path, "w", encoding='utf-8') as f:
 		json.dump(data, f, ensure_ascii=False, indent=4)
 
@@ -1504,7 +1619,7 @@ def top_add_characters():
 
 @app.route("/api/user/top", methods=["GET", "POST"])
 def top():
-	top_data = json.load(open("./offline_responses/api/user/top.json", "r"))
+	top_data = load_json("./offline_responses/api/user/top.json")
 	top_data["user"] = load_json("./data/user/User.json")
 
 	# Auto-fill orderdIds
@@ -1534,12 +1649,14 @@ def top():
 	top_data["character"] = load_json("./data/user/UserCharacter.json")
 	top_data["equipment"] = load_json("./data/user/UserEquipment.json")
 	top_data["item"] = load_json("./data/user/UserItems.json")
+	top_data["episodeUsers"] = load_json("./data/user/UserEpisode.json")
 
 	top_data["parameter"] = load_json("./data/user/UserParameter.json")
 	top_data["hcBalance"] = load_json("./data/user/HcBalance.json")
 	top_data["pieUserSetting"] = load_json("./data/user/PieUserSetting.json")
 
 	top_data["characterMaster"] = load_json("./data/masterdata/CharacterMasterData.json")
+	add_all_emblems(top_data, BASE_DIR / "data/extract/manifest.json")
 	top_data["equipmentMaster"] = load_json("./data/masterdata/EquipmentMasterData.json")
 	top_data["itemMaster"] = load_json("./data/masterdata/ItemMasterData.json")
 
@@ -1579,6 +1696,7 @@ def api_user_info():
 	json_data = load_json("./offline_responses/api/user/info.json")
 
 	json_data["user"] = load_json("./data/user/User.json")
+	json_data["supportUrl"] = f"{public_scheme()}://{request.host}"
 
 	current_time = time.time()
 	json_data["serverTime"] = str(datetime.datetime.fromtimestamp(current_time, datetime.UTC))
@@ -1593,11 +1711,34 @@ def api_user_info():
 
 @app.route("/api/user/character-update", methods=["GET", "POST"])
 def api_user_character_update():
-	request_decrypted_data = msgpack.unpackb(request.data)
+	request_decrypted_data = request_object()
 
-	character_update_response_json = json.load(open("./offline_responses/api/user/character-update.json", "r"))
+	character_update_response_json = load_json("./offline_responses/api/user/character-update.json")
 
-	character_update_response_json["UserCharacter"] = request_decrypted_data["userCharacter"]
+	updates = request_decrypted_data.get("userCharacter")
+	characters = load_json("./data/user/UserCharacter.json")
+	if not isinstance(updates, list):
+		raise AccountError("Invalid character update.")
+	by_id = {entry["CharacterId"]: entry for entry in characters}
+	updated_ids = []
+	for update in updates:
+		if not isinstance(update, dict):
+			raise AccountError("Invalid character update.")
+		character_id = update.get("CharacterId", update.get("characterId"))
+		if not isinstance(character_id, str) or character_id not in by_id:
+			raise AccountError("Unknown character.")
+		# Character-update edits loadouts, not server-owned level/experience.
+		entry = by_id[character_id]
+		updated_ids.append(character_id)
+		for key in ("VisualEquipment", "Costume", "WeaponMain", "WeaponSub",
+				"AccessoryMain", "AccessorySub", "CostumeSpell", "WeaponSpell", "Food"):
+			request_key = key if key in update else key[0].lower() + key[1:]
+			if request_key in update:
+				if not isinstance(update[request_key], list) or not all(isinstance(v, str) for v in update[request_key]):
+					raise AccountError("Invalid character loadout.")
+				entry[key] = update[request_key]
+	save_json("./data/user/UserCharacter.json", characters)
+	character_update_response_json["UserCharacter"] = [by_id[character_id] for character_id in updated_ids]
 
 	body = pack_json_response(character_update_response_json)  # keep leading slash semantics consistent
 	return Response(body, content_type=MSGPACK_CONTENT_TYPE)
@@ -1608,7 +1749,7 @@ def api_user_login():
 	login_data = load_json("./offline_responses/api/user/login.json")
 	login_data["user"] = load_json("./data/user/User.json")
 
-	# login_data["loginInfo"]["name"] = login_data["user"]["name"]
+	login_data["loginInfo"]["name"] = login_data["user"]["name"]
 
 	body = pack_json_response(login_data)  # keep leading slash semantics consistent
 	return Response(body, content_type=MSGPACK_CONTENT_TYPE)
@@ -1616,26 +1757,46 @@ def api_user_login():
 
 @app.route("/api/user/register", methods=["GET", "POST"])
 def api_user_register():
-	request_data = msgpack.unpackb(request.data)
-
-	print(request_data)
+	request_data = request_object()
 
 	response_json = {}
 
+	if not g.account_id:
+		g.account_id, g.issued_token = g.account_store.create(
+			request_data.get("name"), app.config["ACCOUNT_DEFAULTS"]())
 	user_data = load_json("./data/user/User.json")
-
-	user_data["name"] = request_data["name"]
-
-	'''
-	with open("./data/user/User.json", "w") as f:
-		json.dump(user_data, f, indent = 4)
-	'''
 
 	response_json["User"] = user_data
 	response_json["UserItems"] = load_json("./data/user/UserItems.json")
 
 	body = pack_json_response(response_json)
 	return Response(body, content_type=MSGPACK_CONTENT_TYPE)
+
+
+@app.route("/api/user/change-name", methods=["POST"])
+def change_name():
+	name = request_object().get("name")
+	if not isinstance(name, str) or not 2 <= len(name.strip()) <= 64:
+		raise AccountError("Invalid nickname.")
+	user = load_json("./data/user/User.json")
+	user["name"] = name
+	save_json("./data/user/User.json", user)
+	return pack_json_response({"User": user})
+
+
+@app.route("/api/user/change-view-param", methods=["POST"])
+def change_view_param():
+	data = request_object()
+	parameter = load_json("./data/user/UserParameter.json")
+	for request_key, save_field in (("word", "Word"),
+			("favoriteChrId", "FavoriteChrId"), ("emblemId", "EmblemId")):
+		if request_key in data:
+			if not isinstance(data[request_key], str) or len(data[request_key]) > 2048:
+				raise AccountError("Invalid profile value.")
+			parameter[save_field] = data[request_key]
+	save_json("./data/user/UserParameter.json", parameter)
+	return pack_json_response({"UserParameter": parameter, "OrderdIds": [],
+		"Mission": [], "MissionMaster": []})
 
 
 @app.route("/api/billing/get-product-ids", methods=["GET", "POST"])
@@ -1679,54 +1840,8 @@ def api_billing_list():
 @app.route("/api/billing/is-buyable", methods=["GET", "POST"])
 def api_billing_is_buyable():
 	# No paid item is really buyable, since it softlocks the game.
-	response_json = load_json("./offline_responses/api/billing/is-buyable.json")
-
-	# Send the pack to present box instead.
-	query_params = parse_query_params(request.url)
-
-	product_id = query_params["productId"][0]
-
-	t = time.time()
-
-	print(product_id)
-	print(int(t))
-
-	new_present = {
-		"UserPresentId": product_id + " " + str(int(t)),
-		"Reward": {
-			"Type": 1,
-			"Amount": 6480
-		},
-		"Comment": "From the Shop",
-		"Status": 0
-	}
-
-	user_present_box = load_json("./data/user/Presents.json")
-
-	# TODO Handle buying packs by splitting them into separate presents
-
-	product_list_data = load_json("./offline_responses/api/billing/list.json")
-
-	for entry in product_list_data["productList"]:
-
-		if entry["ProductId"] == product_id:
-
-			reward_list = entry["Rewards"]
-
-			for reward in reward_list:
-				new_present["Reward"]["Amount"] = reward["Amount"]
-
-			break
-
-	# TODO make accepting presents not crash the game
-
-	with open("./data/user/Presents.json", "w") as present_file:
-		user_present_box["userPresents"].append(new_present)
-
-		json.dump(user_present_box, present_file, indent=4)
-
-	return pack_json_response(response_json)
-
+	return pack_json_response({"IsStopped": True, "IsReachedLimitByAge": False,
+		"IsTooYoungToPurchase": False, "IsLimited": True})
 
 @app.route("/api/present/list", methods=["GET", "POST"])
 def api_present_list():
@@ -1879,63 +1994,141 @@ def guild_top():
 
 @app.route("/api/user/other-user-info", methods=["GET", "POST"])
 def other_user_info():
-	response = {
-		"UserViews": []
-	}
+	identifiers = request_object().get("userIdInfo", [])
+	if not isinstance(identifiers, list) or len(identifiers) > 32:
+		raise AccountError("Invalid player list.")
+	views = []
+	for identifier in identifiers:
+		if not isinstance(identifier, str):
+			raise AccountError("Invalid player identifier.")
+		# RequestOtherPlayer(userId, characterId) formats "{0},{1}".
+		parts = identifier.split(",")
+		if len(parts) > 2 or not parts[0] or (len(parts) == 2 and not parts[1]):
+			raise AccountError("Invalid player identifier.")
+		account_id = g.account_store.find_account(parts[0])
+		if account_id is None:
+			continue
+		views.append(user_view(account_id, parts[1] if len(parts) == 2 else None))
+	return pack_json_response({"UserViews": views})
 
+
+def user_view(account_id, character_id=None):
+	user = g.account_store.read(account_id, "User.json")
+	parameter = g.account_store.read(account_id, "UserParameter.json")
+	character_id = character_id if character_id is not None else parameter.get("FavoriteChrId", "pl001")
+	characters = g.account_store.read(account_id, "UserCharacter.json")
+	character = next((c for c in characters if c["CharacterId"] == character_id), None)
+	if character is None:
+		raise AccountError("Unknown profile character.")
+	revision = g.account_store.icon_revision(account_id)
+	is_online, last_login = g.account_store.presence(
+		account_id, int(time.time()), app.config["ONLINE_TIMEOUT_SECONDS"])
+	noble_start, noble_end = noble_dates()
+	return {"UserId": user["id"], "Name": user["name"],
+		"CharacterId": character_id,
+		"UserCharacter": character,
+		"UserEquipment": [], "UserItem": [], "EmblemId": parameter.get("EmblemId", ""),
+		"GuildName": "", "Comment": parameter.get("Word", ""),
+		"IsLogin": account_id == g.account_id or is_online, "LastLoginAt": utc_date(last_login),
+		"TotalPower": 0, "MissionRank": parameter.get("MissionRank", 1), "EventScore": 0,
+		**g.account_store.relationship_flags(g.account_id, account_id),
+		"LastMessage": "", "IsNewMessage": False,
+		"NobleStartAt": utc_date(noble_start), "NobleEndAt": utc_date(noble_end),
+		"RankingCharacterId": "", "CharacterRankingRank": 0,
+		"IconUrl": url_for("account_icon", account_id=account_id,
+			revision=revision, _external=True, _scheme=public_scheme()) if revision else None}
+
+
+@app.route("/api/friend/follow", methods=["POST"])
+@app.route("/api/friend/follow-release", methods=["POST"])
+@app.route("/api/friend/follower-release", methods=["POST"])
+@app.route("/api/friend/block", methods=["POST"])
+@app.route("/api/friend/block-release", methods=["POST"])
+def change_friend_relationship():
+	identifiers = request_object().get("targetUserIds")
+	if not isinstance(identifiers, list) or len(identifiers) > 32:
+		raise AccountError("Invalid player list.")
+	targets = []
+	for identifier in identifiers:
+		if not isinstance(identifier, str) or not identifier or len(identifier) > 64:
+			raise AccountError("Invalid player identifier.")
+		account_id = g.account_store.find_account(identifier)
+		if account_id is None:
+			raise AccountError("Unknown player.")
+		if account_id not in targets:
+			targets.append(account_id)
+	action = request.path.rsplit("/", 1)[-1]
+	for account_id in targets:
+		g.account_store.change_relationship(g.account_id, account_id, action)
+	response = {"UserParameter": load_json("./data/user/UserParameter.json"),
+		"Results": [user_view(account_id) for account_id in targets]}
+	if action == "follow":
+		response.update(Mission=[], MissionMaster=[], OrderdIds=[])
 	return pack_json_response(response)
 
 
-@app.route("/api/character-icon/upload-icon", methods=["GET", "POST"])
-def upload_icon():
-	with open("./post/user_icon.json", "w") as file:
-		file.write(str(msgpack.unpackb(request.data)["icon"]))
+@app.route("/api/friend/list", methods=["GET", "POST"])
+def friend_list():
+	return pack_json_response({key: [user_view(account_id) for account_id in accounts]
+		for key, accounts in g.account_store.relationship_lists(g.account_id).items()})
 
-	response_json = {
-		"IconUrl": "/post/user_icon.json"
-	}
+
+@app.route("/api/friend/search", methods=["POST"])
+def friend_search():
+	identifier = request_object().get("searchId")
+	if not isinstance(identifier, str) or not identifier.strip() or len(identifier) > 64:
+		raise AccountError("Invalid player identifier.")
+	views = [user_view(account_id) for account_id in
+		g.account_store.search_accounts(identifier.strip())]
+	return pack_json_response({"User": views[0] if views else None, "Users": views})
+
+
+@app.route("/api/character-icon/upload-icon", methods=["POST"])
+def upload_icon():
+	png = decode_icon(request_object().get("icon"))
+	revision = g.account_store.put_icon(g.account_id, png)
+	response_json = {"IconUrl": url_for("account_icon", account_id=g.account_id,
+		revision=revision, _external=True, _scheme=public_scheme())}
 
 	return Response(pack_json_response(response_json), content_type=MSGPACK_CONTENT_TYPE)
+
+
+@app.route("/account-icons/<account_id>/<revision>.png", methods=["GET"])
+def account_icon(account_id, revision):
+	if len(account_id) != 32 or len(revision) != 64:
+		return Response(status=404)
+	g.account_store = AccountStore(app.config["ACCOUNT_DB"])
+	png = g.account_store.get_icon(account_id, revision)
+	if png is None:
+		return Response(status=404)
+	response = Response(png, content_type="image/png")
+	response.headers["Cache-Control"] = "public, max-age=86400"
+	response.set_etag(revision)
+	return response.make_conditional(request)
+
+
+def public_scheme():
+	# TLS can terminate at the reverse proxy. Do not trust forwarded host/prefix.
+	return "https" if request.headers.get("X-Forwarded-Proto") == "https" else request.scheme
 
 
 # Catch-all for any path
 @app.route("/<path:req_path>", methods=["GET", "POST"])
 def any_path(req_path):
-	print(req_path)
-
-	# Record POST requests
-	if request.method == 'POST':
-		print(request.url)
-		print(request.data)
-		print(request.headers)
-
-		post_path = req_path
-		post_path = post_path.replace("/", "_")
-		with open("./post/" + post_path + ".txt", "w+") as file:
-			file.write(str(request.url))
-			file.write(str(request.headers))
-			file.write(str(request.data))
-			file.write("\n")
-			file.write("\n")
-
-			print(request.headers["Content-Type"])
-
-			if request.headers["Content-Type"] == "application/msgpack":
-				decoded_data = msgpack.unpackb(request.data)
-				file.write(json.dumps(decoded_data))
-			else:
-				with open("./post/" + post_path + " form.txt", "w") as formfile:
-					formfile.write(str(list(request.form.keys())) + "\n")
-					formfile.write(request.form["data"])
-					formfile.write(request.form["app"])
-
-			pass
-
-		body = load_for_request("/" + req_path)	 # keep leading slash semantics consistent
-		return Response(body, content_type=MSGPACK_CONTENT_TYPE)
-	elif request.method == 'GET':
-		body = load_for_request("/" + req_path)	 # keep leading slash semantics consistent
-		return Response(body, content_type=MSGPACK_CONTENT_TYPE)
+	# Account secrets and uploaded images must never be captured by this fallback.
+	app.logger.info("Unhandled game route: %s", request.path)
+	if req_path in ("api/friend/follow", "api/friend/follow-release",
+			"api/friend/follower-release", "api/friend/block",
+			"api/friend/block-release", "api/friend/search"):
+		return account_error_response("This friend endpoint requires POST.", 405)
+	if req_path in ("api/user/login-migration", "api/user/register-migration",
+			"api/user/get-migration-info", "api/user/bnid-migration",
+			"api/user/get-bnid-migration-info", "api/user/bnid-release"):
+		return account_error_response("Account transfer is not implemented.", 501)
+	json_path, msgpack_path = resolve_response_path("/" + req_path)
+	if not (json_path.is_file() or msgpack_path.is_file()):
+		return account_error_response("Unknown game route.", 404)
+	return Response(load_for_request("/" + req_path), content_type=MSGPACK_CONTENT_TYPE)
 
 
 if __name__ == "__main__":

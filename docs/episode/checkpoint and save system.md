@@ -1,3 +1,5 @@
+> Storage update: checkpoint data now lives in each account's SQLite save record, rather than the shared `checkpoint.txt`. See [Accounts and Saves](../Accounts%20and%20Saves.md). The observations below concern episode UI and progression semantics; per-account persistence does not resolve all of those limitations.
+
 ## Checkpoints
 
 ### Saving at checkpoint
