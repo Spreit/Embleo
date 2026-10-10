@@ -492,37 +492,11 @@ def fill_episode_detail_by_episode_id(episode_id):
 
 
 def fill_enemy_detail_by_episode_id(episode_id):
-	enemy_detail = {
-		"Enemies": []
-	}
-
+	from scripts.adapt.episode_data.enemies import episode_enemy_individual_ids
 	episode_enemy_data = load_json(
 		episode_master_data_path_format.format(episode_id) + "EpisodeEnemyMasterDataObject.json")
-
-	for enemy in episode_enemy_data["Datas"]:
-		master_enemy_id = enemy["_individualID"]
-		new_entry = {
-			"EnemyId": master_enemy_id
-		}
-
-		if new_entry not in enemy_detail["Enemies"]:
-
-			if master_enemy_id != "":
-				enemy_detail["Enemies"].append(new_entry)
-
-		if len(enemy["_childEnemyData"]["EnemyIds"]) > 0:
-			for child_enemy_id in enemy["_childEnemyData"]["EnemyIds"]:
-				new_entry = {
-					"EnemyId": child_enemy_id
-				}
-
-				if new_entry not in enemy_detail["Enemies"]:
-					if child_enemy_id != "":
-						enemy_detail["Enemies"].append(new_entry)
-
-	# print("Enemy count", len(start_data["EnemyDetail"]["Enemies"]))
-
-	return enemy_detail
+	return {"Enemies": [{"EnemyId": individual_id}
+		for individual_id in episode_enemy_individual_ids(episode_enemy_data)]}
 
 
 def fill_episode_master_group():

@@ -16,9 +16,27 @@ def SerVec3toVec3(SerializableVector3):
 
 	return vector_3
 
+def episode_enemy_individual_ids(master_data):
+	"""All placed, parent-child and generator individuals, in source order."""
+	ids = []
+	seen = set()
+	for entry in master_data["Datas"]:
+		candidates = [entry["_individualID"],
+			*entry["_childEnemyData"]["EnemyIds"],
+			entry["_summonEnemyData"]["EnemyId"]]
+		for individual_id in candidates:
+			if individual_id and individual_id not in seen:
+				seen.add(individual_id)
+				ids.append(individual_id)
+	return ids
 
-def adapt_episode_enemies_for_episode_layout(master_data):
+
+def adapt_episode_enemies_for_episode_layout(master_data, *, platoon_master_data=None):
 	enemies = []
+	external_enemies = []
+	used_ids = {entry["_id"] for entry in master_data["Datas"]}
+	formations = {entry["_id"]: entry
+		for entry in (platoon_master_data or {"Datas": []})["Datas"]}
 
 	# yeah, that's a lot of data
 	for entry in master_data["Datas"]:
@@ -53,10 +71,16 @@ def adapt_episode_enemies_for_episode_layout(master_data):
 		}
 
 		# EpisodeEnemyChild
+		formation_id = entry["_childEnemyData"]["FormationId"]
+		formation = formations.get(formation_id)
+		if formation_id and formation is None:
+			raise ValueError("Unknown platoon formation {!r} for episode enemy {!r}".format(
+				formation_id, entry["_id"]))
 		layout_entry["Child"] = {
 			"Ids": entry["_childEnemyData"]["EnemyIds"],
-			"Formation": entry["_childEnemyData"]["FormationId"],
-			"FormationPadding": SerVec2toVec2({"x": 1.0, "y": 1.0})
+			"Formation": formation["Formation"] if formation else "",
+			"FormationPadding": SerVec2toVec2(formation["FormationPadding"])
+				if formation else [0, 0]
 		}
 
 		summon_data = entry["_summonEnemyData"]
@@ -79,4 +103,34 @@ def adapt_episode_enemies_for_episode_layout(master_data):
 
 		enemies.append(layout_entry)
 
-	return enemies
+		# Release clients do not run the debug-local external-definition builder.
+		# These definitions are looked up by child/summon creation, never placed.
+		targets = (entry["_childEnemyData"]["EnemyIds"] if entry["_enemyType"] == 1
+			else [summon_data["EnemyId"]] if entry["_enemyType"] == 2
+			else [])
+		for individual_id in dict.fromkeys(targets):
+			if not individual_id:
+				continue
+			external_id = "Ext.{}.{}".format(entry["_id"], individual_id)
+			if external_id in used_ids:
+				raise ValueError("Duplicate external episode enemy {!r}".format(external_id))
+			used_ids.add(external_id)
+			external_enemies.append({
+				"EpisodeEnemyId": external_id,
+				"EnemyId": individual_id,
+				"RoleType": 1,
+				"Flags": layout_entry.get("Flags", 0) & 8,  # Inherit only the parent's wait state.
+				"AppearanceNum": 1,
+				"MaxAppearanceNum": 1,
+				"GroupId": entry["_groupID"],
+				"AppearanceRule": {"Type": 2, "Params": []},
+				"Child": None,
+				"SummonRule": None,
+				"VisualId": "",
+				"SurviveId": "",
+				"PatrolPoints": [],
+				"PriorityPoint": "",
+				"ScenarioNo": list(layout_entry["ScenarioNo"]),
+			})
+
+	return enemies + external_enemies

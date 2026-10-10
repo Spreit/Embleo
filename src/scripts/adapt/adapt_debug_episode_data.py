@@ -102,6 +102,10 @@ def fill_episode_layout_group_by_episode_id(episode_id):
 
             if group_name == "Gimmicks":
                 LayoutGroup[group_name] = adapt_function(master_data, episode_id)
+            elif group_name == "Enemies":
+                platoons = load_json("./data/extract/masterdatadebug/PlatoonMasterDataObject.json")
+                LayoutGroup[group_name] = adapt_function(master_data,
+                    platoon_master_data=platoons)
             else:
                 LayoutGroup[group_name] = adapt_function(master_data)
 
