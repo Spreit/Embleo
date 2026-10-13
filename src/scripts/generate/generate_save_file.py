@@ -181,7 +181,7 @@ def generateUserEquipment(unlock_all=False):
         UserEquipmentData.append(BaseUserWeapon)
 
     if unlock_all:
-        EquipmentMasterData = load_json("./src/data/masterdata/EquipmentMasterData.json")
+        EquipmentMasterData = load_json(Path(__file__).resolve().parents[2] / "data/masterdata/EquipmentMasterData.json")
         base_entry = copy.deepcopy(base_equipment)
 
         for master_entry in EquipmentMasterData:
