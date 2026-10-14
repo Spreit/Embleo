@@ -7,7 +7,7 @@
         }, {
             "TrainingMissionId": "exp_mission_005",
             "Category": 1,
-            "LocationId": "SCH01",
+            "LocationId": "MOC02",
             "Detail": {
                 "TimeLimit": 300,
                 "TimerCountType": 0,
@@ -17,7 +17,7 @@
         }, {
             "TrainingMissionId": "exp_mission_006",
             "Category": 1,
-            "LocationId": "SCH01",
+            "LocationId": "DEC01",
             "Detail": {
                 "TimeLimit": 300,
                 "TimerCountType": 0,

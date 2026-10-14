@@ -22,6 +22,7 @@ import time
 import urllib
 # import logging
 from pathlib import Path
+from copy import deepcopy
 
 import msgpack
 from flask import Flask, Response, request
@@ -276,6 +277,28 @@ progress_type_dict = {
 }
 
 
+def load_adapted_episode_scenario(episode_id):
+	path = "./data/masterdata/scenario/{0}.json".format(episode_id)
+	if does_file_exist(path):
+		return load_json(path)
+	if "sc" in episode_id:
+		return secret_mission_base_scenario
+	if episode_id.startswith("exp_mission_"):
+		checkpoints = load_json(episode_master_data_path_format.format(episode_id)
+			+ "EpisodeCheckPointMasterDataObject.json")["Datas"]
+		if len(checkpoints) != 1:
+			raise ValueError("Training mission requires one initial checkpoint.")
+		checkpoint = checkpoints[0]
+		scenario = deepcopy(secret_mission_base_scenario)
+		scenario[0]["ScenarioNo"] = checkpoint["_startScenarioNo"]
+		scenario[0]["Id"] = str(checkpoint["_startScenarioNo"]).zfill(5)
+		scenario[0]["Progress"].update(
+			ProgressCheckPointId=scenario[0]["Id"], LayoutCheckPointId=checkpoint["_id"],
+			IsDarkenRestart=bool(checkpoint["IsDarkenRestart"]))
+		return scenario
+	return load_json(path)
+
+
 def fill_scenario_group_from_adapted_scenario(episode_id):
 	ScenarioGroup = {
 		"CheckPoints": [],
@@ -298,10 +321,7 @@ def fill_scenario_group_from_adapted_scenario(episode_id):
 		"MiniGames": []
 	}
 
-	if ("sc" in episode_id) or ("exp" in episode_id):
-		adapted_episode_scenario = secret_mission_base_scenario
-	else:
-		adapted_episode_scenario = load_json("./data/masterdata/scenario/{0}.json".format(episode_id))
+	adapted_episode_scenario = load_adapted_episode_scenario(episode_id)
 
 	for entry in adapted_episode_scenario:
 		ProgressType = entry["ProgressType"]
@@ -428,10 +448,7 @@ skip_scenario = []
 def fill_scenario_list_from_adapted_scenario(episode_id):
 	scenarios = []
 
-	if ("sc" in episode_id) or ("exp" in episode_id):
-		adapted_episode_scenario = secret_mission_base_scenario
-	else:
-		adapted_episode_scenario = load_json("./data/masterdata/scenario/{0}.json".format(episode_id))
+	adapted_episode_scenario = load_adapted_episode_scenario(episode_id)
 
 	for entry in adapted_episode_scenario:
 		new_scenario_entry = {
@@ -822,11 +839,17 @@ def level_up_camp_start():
 			selected_character_data = entry
 
 	start_data["CharacterDetail"]["characters"] = [selected_character_data]
+	selected_user_character = next(entry for entry in start_data["CharacterDetail"]["userCharacters"]
+		if entry["CharacterId"] == character_id)
+	mission = next(entry for entry in load_json("./offline_responses/api/training-mission/list.json")["TrainingMissions"]
+		if entry["TrainingMissionId"] == training_mission_id)
+	start_data["EpisodeDetail"] = fill_episode_detail_by_episode_id(training_mission_id)
+	start_scenario_no = start_data["EpisodeDetail"]["Scenarios"][0]["ScenarioNo"]
 
 	start_data["CharacterDetail"]["baseVisual"] = {
 		"settings": [
 			{
-				"ScenarioNo": 1,
+				"ScenarioNo": start_scenario_no,
 				"Ids": [
 					character_id + "_01_001"
 				]
@@ -835,14 +858,7 @@ def level_up_camp_start():
 		"characters": [{
 			"VisualId": character_id + "_01_001",
 			"CharacterId": character_id,
-			"VisualEquipment": [
-				character_id + "_04_001",
-				"wp001_04_001",
-				"",
-				"",
-				"",
-				""
-			]
+			"VisualEquipment": selected_user_character["VisualEquipment"]
 		}
 		]
 	}
@@ -854,14 +870,15 @@ def level_up_camp_start():
 	# }
 
 	# EpisodeDetail
-	start_data["EpisodeDetail"] = fill_episode_detail_by_episode_id(training_mission_id)
-	start_data["EpisodeDetail"]["LayoutGroup"]["CheckPoints"][0]["LoadPlayers"] = [character_id]
+	for checkpoint in start_data["EpisodeDetail"]["LayoutGroup"]["CheckPoints"]:
+		checkpoint["PartyPlayers"] = [character_id]
+		checkpoint["LoadPlayers"] = [character_id]
 	# EpisodeDetailUser
 
 	start_data["EpisodeDetailUser"] = {
 		"status": 0,
 
-		"startScenarioNo": 0,
+		"startScenarioNo": start_scenario_no,
 		"revivalPointId": "",
 		"revivalScenarioNo": 0,
 
@@ -876,8 +893,8 @@ def level_up_camp_start():
 			"characterId": character_id,
 			"hp": 240,
 			"sp": 45,
-			"level": 1,
-			"exp": 0
+			"level": selected_user_character["Level"],
+			"exp": selected_user_character["Exp"]
 		}
 		],
 		"drops": [],
@@ -893,13 +910,13 @@ def level_up_camp_start():
 	start_data["MissionDetail"] = {
 		"TrainingMissionId": training_mission_id,
 		"Category": 1,
-		"LocationId": "IC_VI01",
+		"LocationId": mission["LocationId"],
 		"Detail": {
 			"TimeLimit": 300,
 			"TimerCountType": 1,
 			"Finishes": [
 				{
-					"Type": 2,
+					"Type": 1,
 					"Flag": 1,
 					"Option": ""
 				},{
