@@ -133,7 +133,7 @@ def collect_resources(container):
                     resource_type = RESOURCE_KEYS[key]
 
                     if key in ("soundKey", "soundKeyList") and value.get('m_Name', '').startswith('VoiceCall'):
-                        kind = 30
+                        resource_type = 30
 
                     add_resource(resource_type, item)
                 elif isinstance(item, str) and item.startswith("External/"):
@@ -163,6 +163,10 @@ def adapt_sequence_timeline(sequence_timeline, owner_id):
 
     base_attack_info = {}
 
+    attack_clips = [clip for track in sequence_timeline['tracks']
+                    if track['behaviour']['m_Name'] == 'Attack Track' for clip in track['clips']]
+    adapted_attack = False
+
     for track in sequence_timeline["tracks"]:
 
         track_behaviour_name = track["behaviour"]["m_Name"]
@@ -171,24 +175,11 @@ def adapt_sequence_timeline(sequence_timeline, owner_id):
             base_attack_info = adapt_animator_track(track)
 
         elif track_behaviour_name == "Attack Track":
-            # Handle multiple tracks of the same type
-            attack_data = adapt_attack_track(track, action_name, owner_id)
-
-            if attack_data["totalClipCount"] == 0:
-                if adapted_sequence["AttackSetting"] != {}:
-                    print(owner_id, action_name, "- Tried to overwrite Attack with empty data")
-                else:
-                    print(owner_id, action_name, "Empty Attack Track")
-
-            if attack_data["totalClipCount"] > 0:
-
-                if adapted_sequence["AttackSetting"] != {}:
-                    print(owner_id, action_name, "- multiple Attack Tracks detected")
-
-                    if attack_data["totalClipCount"] > adapted_sequence["AttackSetting"]["totalClipCount"]:
-                        adapted_sequence["AttackSetting"] = attack_data
-                else:
+            if not adapted_attack:
+                attack_data = adapt_attack_track({'clips': attack_clips}, action_name, owner_id)
+                if attack_data['totalClipCount'] > 0:
                     adapted_sequence["AttackSetting"] = attack_data
+                adapted_attack = True
 
         elif track_behaviour_name == "Move Track":
             adapted_sequence["MoveSetting"] = adapt_move_track(track, action_name, owner_id)
@@ -196,7 +187,7 @@ def adapt_sequence_timeline(sequence_timeline, owner_id):
         elif track_behaviour_name == "UpdateParameter Track":
             adapted_sequence["UpdateParameterSetting"] = adapt_update_parameter_track(track, action_name, owner_id)
 
-    ResourceSet = collect_resources(adapted_sequence["AttackSetting"])
+    ResourceSet = collect_resources(sequence_timeline)
 
     if ResourceSet:
         resources = {
@@ -298,7 +289,7 @@ def adapt_character_sequences(extracted_setting_folder, character_player_folder)
                 setting = {
                     "CharacterId": character_id,
                     "Category": setting_key,
-                    "Data": json.dumps({setting_key: value_list})
+                    "Data": serialize_setting(setting_key, character_id, value_list)
                 }
 
                 sequence_master_data.append(setting)
@@ -357,9 +348,16 @@ def adapt_enemy_sequence(extracted_setting_folder, animation_folder):
                     setting = {
                         "EnemyId": enemy_id,
                         "Category": setting_key,
-                        "Data": json.dumps({setting_key: value_list})
+                        "Data": serialize_setting(setting_key, enemy_id, value_list)
                     }
 
                     sequence_master_data.append(setting)
 
     return sequence_master_data
+
+
+def serialize_setting(category, owner, values):
+    if category == 'ResourceList':
+        resources = {(r['type'], r['value']): r for value in values for r in value['values']}
+        values = {'id': owner, 'values': list(resources.values())}
+    return json.dumps({category: values})

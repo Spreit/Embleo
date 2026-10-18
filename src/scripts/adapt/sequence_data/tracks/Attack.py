@@ -1,4 +1,5 @@
 import copy
+from .indexed import put_clip, indexed_data
 
 
 def normalize_IgnoreHitLayer(container):
@@ -93,7 +94,7 @@ def adapt_attack_track(attack_track, sequence_name, owner_id):
         "clipDatas": []
     }
 
-    clip_counter = 0
+    clips = {}
     for clip in attack_track["clips"]:
         clip_MonoBehaviour = clip["behaviour"]
         clip_m_Name = clip_MonoBehaviour["m_Name"]
@@ -103,10 +104,11 @@ def adapt_attack_track(attack_track, sequence_name, owner_id):
         if clip_m_Name in ATTACK_CLIPS:
             destination_key, source_key = ATTACK_CLIPS[clip_m_Name]
 
-            attack_clip_setting = {
-                "hitSetting": copy.deepcopy(clip_MonoBehaviour.get("hitSettings", None)),
-                destination_key: copy.deepcopy(clip_MonoBehaviour[source_key])
-            }
+            settings = clip_MonoBehaviour[source_key]
+            index = settings.get('ClipIndex', clip_MonoBehaviour.get('clipIndex', len(clips)))
+            attack_clip_setting = {destination_key: copy.deepcopy(settings)}
+            if 'hitSettings' in clip_MonoBehaviour:
+                attack_clip_setting['hitSetting'] = copy.deepcopy(clip_MonoBehaviour['hitSettings'])
 
             if clip_m_Name == "MinionAttack Clip":
                 attack_clip_setting["clip_Attack"] = copy.deepcopy(clip_MonoBehaviour["attackClipSettings"])
@@ -120,13 +122,12 @@ def adapt_attack_track(attack_track, sequence_name, owner_id):
                 if "_throwAttackParameter" in clip_MonoBehaviour:
                     attack_clip_setting["enemy_Throw"] = copy.deepcopy(clip_MonoBehaviour["_throwAttackParameter"])
 
-            AttackSetting["totalClipCount"] += 1
             attack_clip_setting = normalize_IgnoreHitLayer(attack_clip_setting)
-            AttackSetting["clipDatas"].append(attack_clip_setting)
-
-            clip_counter += 1
+            put_clip(clips, index, attack_clip_setting)
 
         elif clip_m_Name not in ATTACK_CLIPS_SKIP:
             print(owner_id, sequence_name, "-", clip_m_Name, "-", "Unknown attack clip")
 
+    AttackSetting['clipDatas'] = indexed_data(clips)
+    AttackSetting['totalClipCount'] = len(AttackSetting['clipDatas'])
     return AttackSetting
