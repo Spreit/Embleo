@@ -14,7 +14,6 @@ from scripts.adapt.adapt_sequence_data import adapt_all_sequence_data
 
 from scripts.generate.generate_episode_master_data import generate_episode_master_data
 from scripts.generate.generate_temp_level_curve import generate_character_curve_list, generate_equipment_curve_list
-from scripts.generate.generate_save_file import generateSaveFile
 
 '''
 TODO
@@ -37,7 +36,6 @@ extract_sequences = True
 adapt_sequences = True
 adapt_scenario = True
 generate = True
-save_data = True
 
 DEBUG_CONFIG = False
 
@@ -354,9 +352,6 @@ def setup(asset_server_link):
 
     if generate:
         generate_master_data()
-
-    if save_data:
-        generateSaveFile(SAVE_DATA_FOLDER)
 
 
 if __name__ == "__main__":
