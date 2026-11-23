@@ -42,6 +42,8 @@ SKIP_BATTLES = False
 SKIP_VIDEOS = False
 SKIP_ROUTE_FORK_MERGE = False
 
+SKIP_TUTORIAL_SUMMON = True
+
 ADD_BASTIEN_EPISODE = True  # Don't touch it if the cover is missing
 ADD_GASPARD_EPISODE = True  # Don't touch it if the cover is missing
 ADD_LYDIE_EPISODE = True  # Don't touch it if the cover is missing
@@ -445,6 +447,9 @@ def fill_scenario_list_from_adapted_scenario(episode_id):
 			"ProgressType": entry["ProgressType"],
 			"ProgressId": entry["Id"]
 		}
+
+		if SKIP_TUTORIAL_SUMMON and (episode_id == "pl001_ep001" and entry["ScenarioNo"] == 13022):
+			continue
 
 		if entry["ProgressType"] in skip_scenario:
 			continue
