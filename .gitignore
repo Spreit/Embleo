@@ -50,3 +50,4 @@ src/cmd server.bat
 
 *.lnk
 *.apk
+/.idea

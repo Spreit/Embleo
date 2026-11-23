@@ -43,6 +43,10 @@ SKIP_VIDEOS = False
 SKIP_ROUTE_FORK_MERGE = False
 
 ADD_BASTIEN_EPISODE = True  # Don't touch it if the cover is missing
+ADD_GASPARD_EPISODE = True  # Don't touch it if the cover is missing
+ADD_LYDIE_EPISODE = True  # Don't touch it if the cover is missing
+ADD_VANESSA_EPISODE = True  # Don't touch it if the cover is missing
+ADD_AMELIE_EPISODE = True  # Don't touch it if the cover is missing
 
 FAKE_CHECKPOINT_PATH = "./checkpoint.txt"
 
@@ -820,8 +824,16 @@ def level_up_camp_start():
 	for entry in start_data["CharacterDetail"]["characters"]:
 		if entry["CharacterId"] == character_id:
 			selected_character_data = entry
+			break
 
 	start_data["CharacterDetail"]["characters"] = [selected_character_data]
+
+	character_visual_setting = {}
+
+	for entry in start_data["CharacterDetail"]["userCharacters"]:
+		if entry["CharacterId"] == character_id:
+			character_visual_setting = entry["VisualEquipment"]
+			break
 
 	start_data["CharacterDetail"]["baseVisual"] = {
 		"settings": [
@@ -835,14 +847,7 @@ def level_up_camp_start():
 		"characters": [{
 			"VisualId": character_id + "_01_001",
 			"CharacterId": character_id,
-			"VisualEquipment": [
-				character_id + "_04_001",
-				"wp001_04_001",
-				"",
-				"",
-				"",
-				""
-			]
+			"VisualEquipment": character_visual_setting
 		}
 		]
 	}
@@ -1335,6 +1340,14 @@ def top_add_episodes():
 			# print(episode_id)
 
 			if episode_id == "pl011_ep002" and ADD_BASTIEN_EPISODE:
+				pass
+			elif episode_id == "pl014_ep002" and ADD_GASPARD_EPISODE:
+				pass
+			elif episode_id == "pl020_ep002" and ADD_LYDIE_EPISODE:
+				pass
+			elif episode_id == "pl006_ep002" and ADD_VANESSA_EPISODE:
+				pass
+			elif episode_id == "pl015_ep002" and ADD_AMELIE_EPISODE:
 				pass
 			elif episode_id in unreleased_episodes:
 				continue
