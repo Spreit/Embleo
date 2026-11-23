@@ -3,15 +3,43 @@ import sys
 import zipfile
 import os
 
+"""
+    How to use
+- Drag-and-drop APK onto the script 
+- Enter new Game Server URL
+- Wait for it to finish
+- Install the APK with "edited-aligned-debugSigned.apk" at the end
+
+If the patcher window auto-closes, put the APK in the same folder as the patcher and double-click it.
+"""
+
+"""
+    How it works
+The Game Server URL is stored in /assets/bin/Data/level0 file at 0x00011364.
+All this script does is:
+- Change current Game Server URL to provided URL and its hardcoded length
+- Remove *.colopl.jp template and its hardcoded length (otherwise Global APK crashes)
+
+Since changing anything within the APK breaks its integrity, uber-apk-signer is used to fix this.
+"""
+
 '''
 TODO
-Add checks
-Auto-scan folder for .apk file
+Add more URL checks
+Make messaging more clear
+Add ability to patch using hardcoded values below
+Make uber-apk-signer finder
 '''
 
 # Alternative method to patch an APK
-path_to_apk = "./lumi_apk.apk"
-new_server_url = "replace_this_with_server_address"
+# To make the patcher use the following parameters
+# Set manual_patching to True
+
+manual_patching = False
+
+manual_apk_path = "./lumi.apk"
+manual_server_url = "replace_this_with_server_address"
+
 
 # Variables
 max_length = 35
@@ -41,15 +69,15 @@ def patch_game_server_url_in_level0(new_url, level0_bytes):
 
     new_url_length = len(new_url)
 
-    # Clear current link
+    # Clear current URL
     for i in range(max_length + 1):
         patched_level0[url_offset + i] = 0
 
-    # Paste new link
+    # Paste new URL
     for i in range(new_url_length):
         patched_level0[url_offset + i] = ord(new_url[i])
 
-    # Patch link size
+    # Patch URL size
     patched_level0[url_offset - 4] = new_url_length
 
     print(new_url_length, get_current_url(patched_level0))
@@ -61,58 +89,101 @@ def patch_game_server_url_in_level0(new_url, level0_bytes):
     return bytes(patched_level0)
 
 
-
-if __name__ == "__main__":
-
-    working_directory = os.getcwd()
-
-    # print(os.listdir())
-
+def get_path_to_apk(current_working_directory):
     # Check dragged and dropped APK
+    path_to_apk = ""
+
+    if manual_patching:
+        return manual_apk_path
+
     try:
         path_to_apk = sys.argv[1]
-        print(path_to_apk)
+        print("Path to the dropped apk:", path_to_apk)
+        return path_to_apk
+
+    # If not dropped, check the script folder for APKs
     except IndexError:
         print("No file dropped, using script values")
-        print("Looking for APK at ", working_directory)
+        print("Looking for APK at ", current_working_directory)
 
         file_list = os.listdir("./")
 
         for file in file_list:
 
             if ".apk" in file:
-                path_to_apk = working_directory + "/" + file
+                path_to_apk = current_working_directory + "/" + file
                 print(path_to_apk)
+
+    return path_to_apk
+
+
+def extract_level0_from_apk(path_to_apk):
+    level0_bytes: bytes
+
+    with zipfile.ZipFile(path_to_apk, "r", compression=zipfile.ZIP_DEFLATED) as apk:
+        with apk.open(level0_path, mode="r") as level0:
+            level0_bytes = level0.read()
+
+    return level0_bytes
+
+
+def make_apk_with_patched_level0(apk_path, patched_apk_path):
+    pass
+
+
+if __name__ == "__main__":
+    print("= = = Embleo APK patcher = = =")
+
+    working_directory = os.getcwd()
+
+    argument_amount = len(sys.argv)
+
+    if argument_amount > 2:
+        print("Too many arguments. If path to APK contains spaces, put it inbetween double quotes.")
+        input("Press Enter to exit")
+        exit()
+
+    # print(os.listdir())
+    print("Amount of sys.argv", argument_amount)
+
+    # Find original APK, or any at this point
+    path_to_apk = get_path_to_apk(working_directory)
+
+    if path_to_apk == "":
+        print("No APK was found. Either: \n- Drag-and-drop the APK onto the apk_patcher file \nor \n- Put the APK next to the apk_patcher and run the script again.")
 
     # Check extension
     if path_to_apk[-4:] == "xapk":
         print("XAPK is not supported.")
-        input()
+        input("Press Enter to exit")
         exit()
-
-    current_url: str
-    current_level0_bytes: bytes
 
     if not os.path.isfile(path_to_apk):
         print("Couldn't find game APK at", working_directory)
         input()
     else:
         print("Found APK at", path_to_apk)
-    
-    with zipfile.ZipFile(path_to_apk, "r", compression=zipfile.ZIP_DEFLATED) as apk:
-        with apk.open(level0_path, mode="r") as level0:
-            current_level0_bytes = level0.read()
-            current_url = get_current_url(current_level0_bytes)
 
-    print("Current game server URL:", current_url)
+    # Patching Game Server URL
+    current_level0_bytes = extract_level0_from_apk(path_to_apk)
+    current_url = get_current_url(current_level0_bytes)
 
-    print("Enter new game server URL:")
-    new_server_url = input()
+    print("Current Game Server URL:", current_url)
 
-    if len(new_server_url) > max_length:
-        print("This game server URL is too long! Are you confusing it with asset server URL?")
-        input()
-        exit()
+    is_url_valid = False
+
+    while not is_url_valid:
+        print("Enter new Game Server URL:")
+        new_server_url = input()
+
+        # Check URL validity
+        if len(new_server_url) > max_length:
+            print("This Game Server URL is too long! Are you confusing it with asset server URL?")
+        elif ("http://" != new_server_url[:7]) and ("https://" != new_server_url[:8]):
+            print("Game Server URL has to start with either \"http://\" or \"https://\".")
+        else:
+            is_url_valid = True
+
 
     patched_level0 = patch_game_server_url_in_level0(new_server_url, current_level0_bytes)
 
@@ -128,11 +199,10 @@ if __name__ == "__main__":
                 else:
                     apk.writestr(item, patched_level0)
 
-    # Sign apk
+    # Align and sign apk
     uber_sign_command = ["java", "-jar", "uber-apk-signer-1.3.0.jar", "-apk", edited_apk_path]
     subprocess.run(uber_sign_command)
 
     print("Patched the APK with URL:", new_server_url)
-    print("Press any button to exit")
-    input()
+    input("Press Enter to exit")
     exit()
