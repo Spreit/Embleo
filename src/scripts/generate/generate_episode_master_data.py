@@ -18,6 +18,7 @@ episode_master_base = {
         "Chapters": [],
         "SecretMissions": [],
         "MaxTreasureCount": 0,
+        # "AdventureNo": 0,  # Not present on non-Adventurer's episode
         "LikeCount": 0,
         "CommentCount": 0,
         "StartAt": "2026-01-01T00:00:00Z"
@@ -65,6 +66,21 @@ def get_episode_years_from_adapted_chronology(adapted_chronology_path):
     return episode_years
 
 
+def get_adventurer_episode_order_from_adapted_chronology(adapted_chronology_path):
+    adventurer_chronology_path = adapted_chronology_path / "adv.json"
+
+    adv_episode_order = {}
+
+    with open(adventurer_chronology_path, "r", encoding="UTF-8") as f:
+        chronology = json.load(f)
+
+        for entry in chronology["Chronologies"][0]["Events"]:
+            if "EpisodeId" in entry:
+                adv_episode_order[entry["EpisodeId"]] = entry["AdventureNo"]
+
+    return adv_episode_order
+
+
 def generate_episode_id_list():
     episode_id_list = []
 
@@ -105,7 +121,7 @@ def generate_episode_chapters(episode_id):
     return chapters
 
 
-def generate_episode_master_entry(episode_id, episode_year):
+def generate_episode_master_entry(episode_id, episode_year, adventurer_episode_number=0):
     episode = dict.copy(episode_master_base)
 
     episode["EpisodeId"] = episode_id
@@ -125,6 +141,9 @@ def generate_episode_master_entry(episode_id, episode_year):
 
     episode["Chapters"] = generate_episode_chapters(episode_id)
 
+    if adventurer_episode_number > 0:
+        episode["AdventureNo"] = adventurer_episode_number
+
     return episode
 
 
@@ -133,11 +152,13 @@ def generate_episode_master_data(output_folder, adapted_chronology_folder):
 
     episode_id_list = generate_episode_id_list()
     episode_years = get_episode_years_from_adapted_chronology(adapted_chronology_folder)
+    adv_episode_order = get_adventurer_episode_order_from_adapted_chronology(adapted_chronology_folder)
 
     for episode_id in episode_id_list:
         episode_year = episode_years.get(episode_id, 0)
+        adventurer_episode_number = adv_episode_order.get(episode_id, 0)
 
-        episode_master_entry = generate_episode_master_entry(episode_id, episode_year)
+        episode_master_entry = generate_episode_master_entry(episode_id, episode_year, adventurer_episode_number)
 
         episode_master_data.append(episode_master_entry)
 
