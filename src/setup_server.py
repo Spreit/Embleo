@@ -45,11 +45,11 @@ if DEBUG_CONFIG:
     manifest = False
     download = False
     extract = False
-    adapt_master_data = False
+    adapt_master_data = True
     extract_sequences = False
-    adapt_sequences = True
+    adapt_sequences = False
     adapt_scenario = False
-    generate = False
+    generate = True
     save_data = False
 
 # Download and extract manifest from the asset server
@@ -212,7 +212,7 @@ def generate_master_data():
     master_data_path = DATA_FOLDER / "masterdata"
 
     print("Generating Episode Master Data")
-    generate_episode_master_data(master_data_path, CHRONOLOGY_FOLDER)
+    generate_episode_master_data(master_data_path, CHRONOLOGY_FOLDER, master_data_path / "SecretMissions.json")
 
     # LevelCurves
     print("Generating Character Level Curves")

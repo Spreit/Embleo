@@ -12,6 +12,7 @@ from .master_data.sequence import adapt_debug_sequences_master_data
 from .master_data.item import adapt_debug_item_master_data
 from .master_data.partsstatusinfo import adapt_debug_parts_status_info_master_data
 from .master_data.platoon import adapt_debug_platoon_info
+from .master_data.secret_mission import adapt_debug_secret_missions
 from .master_data.stage_option_gimmick import adapt_debug_stage_option_gimmick_master_data
 from .master_data.vehicle import adapt_debug_vehicle_master_data
 
@@ -70,6 +71,12 @@ adapt_debug_functions = [
         "DebugName": "PlatoonMasterDataObject",
         "AdaptName": "PlatoonMasterData",
         "Function": adapt_debug_platoon_info
+    },
+    {
+        "DisplayName": "Secret Missions",
+        "DebugName": "SecretMission",
+        "AdaptName": "SecretMissions",
+        "Function": adapt_debug_secret_missions
     },
     {
         "DisplayName": "Stage Option Gimmick",

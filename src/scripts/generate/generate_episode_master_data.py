@@ -147,18 +147,23 @@ def generate_episode_master_entry(episode_id, episode_year, adventurer_episode_n
     return episode
 
 
-def generate_episode_master_data(output_folder, adapted_chronology_folder):
+def generate_episode_master_data(output_folder, adapted_chronology_folder, secret_missions_file_path):
     episode_master_data = []
 
     episode_id_list = generate_episode_id_list()
     episode_years = get_episode_years_from_adapted_chronology(adapted_chronology_folder)
     adv_episode_order = get_adventurer_episode_order_from_adapted_chronology(adapted_chronology_folder)
 
+    secret_missions = {}
+    with open(secret_missions_file_path, "r") as f:
+        secret_missions = json.load(f)
+
     for episode_id in episode_id_list:
         episode_year = episode_years.get(episode_id, 0)
         adventurer_episode_number = adv_episode_order.get(episode_id, 0)
 
         episode_master_entry = generate_episode_master_entry(episode_id, episode_year, adventurer_episode_number)
+        episode_master_entry["SecretMissions"] = secret_missions.get(episode_id, [])
 
         episode_master_data.append(episode_master_entry)
 
