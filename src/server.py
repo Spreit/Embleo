@@ -26,31 +26,11 @@ from pathlib import Path
 import msgpack
 from flask import Flask, Response, request
 
+from config import *
 from scripts.adapt.adapt_debug_episode_data import fill_episode_layout_group_by_episode_id
 
 # from server_scripts.challenge_mission.challenge_mission import challenge_mission
 
-DISABLE_LEVELUPCAMP = False
-DISABLE_EVENTS = True
-DISABLE_GACHA = True
-DISABLE_SHOP = True
-DISABLE_CHALLENGE_MISSIONS = True
-
-DISABLE_SCENARIOS = False
-
-SKIP_BATTLES = False
-SKIP_VIDEOS = False
-SKIP_ROUTE_FORK_MERGE = False
-
-SKIP_TUTORIAL_SUMMON = True
-
-ADD_BASTIEN_EPISODE = True  # Don't touch it if the cover is missing
-ADD_GASPARD_EPISODE = True  # Don't touch it if the cover is missing
-ADD_LYDIE_EPISODE = True  # Don't touch it if the cover is missing
-ADD_VANESSA_EPISODE = True  # Don't touch it if the cover is missing
-ADD_AMELIE_EPISODE = True  # Don't touch it if the cover is missing
-
-FAKE_CHECKPOINT_PATH = "./checkpoint.txt"
 
 '''
 logging.basicConfig(
@@ -1344,16 +1324,19 @@ def top_add_episodes():
 
 			# print(episode_id)
 
-			if episode_id == "pl011_ep002" and ADD_BASTIEN_EPISODE:
-				pass
-			elif episode_id == "pl014_ep002" and ADD_GASPARD_EPISODE:
-				pass
-			elif episode_id == "pl020_ep002" and ADD_LYDIE_EPISODE:
-				pass
-			elif episode_id == "pl006_ep002" and ADD_VANESSA_EPISODE:
-				pass
-			elif episode_id == "pl015_ep002" and ADD_AMELIE_EPISODE:
-				pass
+			if ADD_SECOND_EPISODES:
+				if episode_id == "pl011_ep002" and ADD_BASTIEN_EPISODE:
+					pass
+				elif episode_id == "pl014_ep002" and ADD_GASPARD_EPISODE:
+					pass
+				elif episode_id == "pl020_ep002" and ADD_LYDIE_EPISODE:
+					pass
+				elif episode_id == "pl006_ep002" and ADD_VANESSA_EPISODE:
+					pass
+				elif episode_id == "pl015_ep002" and ADD_AMELIE_EPISODE:
+					pass
+				elif episode_id in unreleased_episodes:
+					continue
 			elif episode_id in unreleased_episodes:
 				continue
 
